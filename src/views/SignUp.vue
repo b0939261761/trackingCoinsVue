@@ -99,8 +99,8 @@ v-content
 <script>
 export default {
   data: ( ) => ( {
-    username: 'boss',
-    email: 'b360124@gmail.c',
+    username: '',
+    email: '',
     password: '',
     passwordConfirm: '',
     passVisible: false,

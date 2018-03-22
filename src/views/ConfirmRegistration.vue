@@ -86,7 +86,7 @@ export default {
   props: ['token'],
   data: ( ) => ( {
     alertConfirmed: true,
-    email: 'b360124@gmail.c',
+    email: '',
     isConfirmed: false,
     isSubmit: false,
     isSend: false
@@ -117,7 +117,6 @@ export default {
               this.alertConfirmed = false;
               this.isSubmit = true;
               this.isSend = status;
-              console.log( status )
             } );
         }
       } )

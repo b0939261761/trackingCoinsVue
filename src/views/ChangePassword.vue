@@ -31,7 +31,24 @@ v-content
             )
               | Назад
 
-          template( v-if='isConfirmed' )
+          template( v-if='isSubmit' )
+            v-card-text
+              v-alert(
+                :type='alertSendType'
+                value='true'
+                transition='scale-transition'
+                )
+                  | {{ alertSendText }}
+
+            v-card-actions( v-if='isChange' )
+              v-spacer
+              v-btn(
+                  @click='onGoHome'
+                  color='primary'
+                )
+                  | Перейти на главную
+
+          template( v-else )
             v-card-text
               v-text-field(
                 label='Пароль'
@@ -61,88 +78,34 @@ v-content
             v-card-actions
               v-spacer
               v-btn(
-                  @click='onSave'
+                  @click='onSubmit'
                   color='primary'
                   :disabled='isDisabledSave'
                 )
                   | Сохранить
-
-          template( v-else )
-
-            v-card-text( v-show='alertConfirmed' )
-              v-alert(
-                v-model='alertConfirmed'
-                :type='alertComfirmedType'
-                dismissible
-              )
-                | {{ alertComfirmedText }}
-
-            v-card-text( v-if='isSubmit' )
-              v-alert(
-                :type='alertSendType'
-                value='true'
-                transition='scale-transition'
-                )
-                  | {{ alertSendText }}
-
-            template( v-else )
-              v-card-text
-                form( @submit.prevent='onSubmit' )
-                  v-text-field(
-                    label='E-mail',
-                    v-model='email',
-                    :error-messages="errors.collect('email')"
-                    v-validate="{ required: true, email: true, uncheck_email: true }"
-                    data-vv-delay='500'
-                    data-vv-name='email'
-                  )
-
-              v-card-actions
-                v-spacer
-                v-btn(
-                    :disabled='isDisabled'
-                    @click='onSubmit'
-                    color='primary'
-                  )
-                    | Выслать
 </template>
 
 <script>
-import { Validator } from 'vee-validate';
-import store from '@/store/'
-
-Validator.extend( 'uncheck_email', {
-  getMessage: field => `Пользователь с данным email отсуствует.`,
-  validate: value => new Promise( ( resolve ) =>
-    store.dispatch( 'auth/checkUser', value )
-      .then( status => resolve( { valid: status } ) )
-  )
-} );
 
 export default {
-  props: ['token'],
+  props: {
+    token: String
+  },
   data: ( ) => ( {
-    alertConfirmed: true,
-    email: 'b360124@gmail.c',
-    isConfirmed: true,
     password: '',
     passwordConfirm: '',
     passVisible: false,
     passConfVisible: false,
     isSubmit: false,
-    isSend: false
+    isChange: false
   } ),
   computed: {
-    alertComfirmedType( ) { return this.isConfirmed ? 'success' : 'error' },
-    alertComfirmedText( ) {
-      return this.isConfirmed ?
-        'Аккаунт активирован.' :
-        'Ошибка при активации, попробуйте выслать подтверждение повторно.'
+    alertSendType( ) {
+      return this.isChange ? 'success' : 'error'
     },
-    alertSendType( ) { return this.isSend ? 'success' : 'error' },
     alertSendText( ) {
-      return this.isSend ?
-        'Письмо с ссылкой подтверждения отправлено на email.' :
+      return this.isChange ?
+        'Пароль изменен.' :
         'Операция завершилась неудачно, попробуйте позже.'
     },
     isDisabledSave( ) {
@@ -171,12 +134,10 @@ export default {
     onSubmit () {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          this.$store.dispatch( 'auth/repeatConfirmation', this.email )
+          this.$store.dispatch( 'auth/changePassword', { password: this.password } )
             .then( status => {
-              this.alertConfirmed = false;
               this.isSubmit = true;
-              this.isSend = status;
-              console.log( status )
+              this.isChange = status;
             } );
         }
       } )
@@ -186,23 +147,10 @@ export default {
     },
     onSave( ) {
       this.$router.push( { name: 'home' } );
+    },
+    onGoHome( ) {
+      this.$router.push( { name: 'home' } );
     }
-  },
-  created( ) {
-    if ( this.$route.query ) history.replaceState(null, null, this.$route.path );
-
-    if ( this.token ) {
-      this.$store.dispatch( 'auth/confirmRegistration', this.token )
-        .then( status => {
-          this.isConfirmed = status
-          if ( status ) {
-            this.timer = setTimeout( ( ) => this.onGoHome( ), 2000 );
-          }
-        } )
-    }
-  },
-  beforeDestroy( ) {
-    clearTimeout( this.timer );
   }
 }
 </script>

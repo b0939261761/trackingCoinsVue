@@ -74,10 +74,9 @@ v-content
 <script>
 
 export default {
-  props: [ 'token' ],
   data: ( ) => ( {
     alertConfirmed: true,
-    email: 'b360124@gmail.c',
+    email: '',
     isConfirmed: false,
     isSubmit: false,
     isSend: false
@@ -109,26 +108,7 @@ export default {
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
-    },
-    onSave( ) {
-      this.$router.push( { name: 'home' } );
     }
-  },
-  created( ) {
-    if ( this.$route.query ) history.replaceState(null, null, this.$route.path );
-
-    if ( this.token ) {
-      this.$store.dispatch( 'auth/confirmRegistration', this.token )
-        .then( status => {
-          this.isConfirmed = status
-          if ( status ) {
-            this.timer = setTimeout( ( ) => this.onGoHome( ), 2000 );
-          }
-        } )
-    }
-  },
-  beforeDestroy( ) {
-    clearTimeout( this.timer );
   }
 }
 </script>

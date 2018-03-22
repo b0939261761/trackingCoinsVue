@@ -45,13 +45,12 @@ const router = new Router( {
     {
       path: '/confirm_recovery',
       name: 'confrimRecovery',
-      beforeEnter( to, from, next ) {
+      async beforeEnter( to, from, next ) {
         const token = to.query.token;
-
         let routeName = 'errorRecovery';
 
         if ( token ) {
-          store.dispatch( 'auth/confirmRecovery', token )
+          await store.dispatch( 'auth/confirmRecovery', token )
             .then( status => {
               if ( status ) {
                 routeName = 'newPassword';

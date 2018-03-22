@@ -1,22 +1,5 @@
 import http from '@/http';
-import { parseJwt } from '@/jwt';
-import Cookies from 'js-cookie';
-
-const setToken = ( cookie, token ) => {
-  const expires = new Date( parseJwt( token ).exp * 1000 );
-  Cookies.set( cookie, token, { expires } );
-  console.log( document.cookie );
-};
-
-const setTokens = ( accessToken, refreshToken ) => {
-  setToken( 'accessToken', accessToken );
-  setToken( 'refreshToken', accessToken );
-};
-
-const removeTokens = ( ) => {
-  Cookies.remove( 'accessToken' );
-  Cookies.remove( 'refreshToken' );
-};
+import { getTokens, setTokens, removeTokens } from '@/cookies';
 
 // Общий метод входа на сайт: SingIn, ConfrimRegistration, ConfirmPassword
 const enterSite = ( response ) => {
@@ -57,7 +40,17 @@ export default {
     },
     async confirmRecovery( { commit }, token ) {
       return http.post( '/confirm_recovery', { token } )
-        .then( response => response.data.status );
+        .then( response => enterSite( response ) );
+    },
+    async changePassword( { commit }, payload ) {
+      const { accessToken, refreshoken } = getTokens( );
+      const token = accessToken || refreshoken;
+      if ( token ) {
+        return http.post( '/change_password', payload )
+          .then( response => enterSite( response ) );
+      } else {
+        return new Promise( resolve => resolve( true ) );
+      }
     }
   }
 };
