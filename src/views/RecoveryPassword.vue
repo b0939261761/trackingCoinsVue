@@ -65,7 +65,7 @@ v-content
 export default {
   props: ['token'],
   data: ( ) => ( {
-    email: 'b360124@gmail.c',
+    email: '',
     isSubmit: false,
     isSend: false
   } ),

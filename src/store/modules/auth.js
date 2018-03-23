@@ -1,5 +1,5 @@
 import http from '@/http';
-import { getTokens, setTokens, removeTokens } from '@/cookies';
+import { setTokens, removeTokens } from '@/cookies';
 
 // Общий метод входа на сайт: SingIn, ConfrimRegistration, ConfirmPassword
 const enterSite = ( response ) => {
@@ -14,19 +14,19 @@ const enterSite = ( response ) => {
 export default {
   namespaced: true,
   actions: {
-    async signIn( { commit }, { email, password } ) {
+    async signIn( _, { email, password } ) {
       return http.post( '/sing_in', { email, password } )
         .then( response => enterSite( response ) );
     },
-    async signUp( { commit }, { username, email, password } ) {
+    async signUp( _, { username, email, password } ) {
       return http.post( '/sing_up', { username, email, password } )
         .then( response => response.data.status );
     },
-    async checkUser( { commit }, email ) {
+    async checkUser( _, email ) {
       return http.post( '/check_user', { email } )
         .then( response => response.data.status );
     },
-    async confirmRegistration( { commit }, token ) {
+    async confirmRegistration( _, token ) {
       return http.post( '/confirm_registration', { token } )
         .then( response => enterSite( response ) );
     },
@@ -38,19 +38,23 @@ export default {
       return http.post( '/recovery_password', { email } )
         .then( response => response.data.status );
     },
-    async confirmRecovery( { commit }, token ) {
+    async confirmRecovery( _, token ) {
       return http.post( '/confirm_recovery', { token } )
-        .then( response => enterSite( response ) );
+        .then( response => response.data.status );
     },
-    async changePassword( { commit }, payload ) {
-      const { accessToken, refreshoken } = getTokens( );
-      const token = accessToken || refreshoken;
-      if ( token ) {
-        return http.post( '/change_password', payload )
-          .then( response => enterSite( response ) );
-      } else {
-        return new Promise( resolve => resolve( true ) );
-      }
+    async changePassword( _, { password, token } ) {
+      return http.post( '/change_password', { password, token } )
+        .then( response => enterSite( response ) );
     }
+    // async changePassword( { commit }, payload ) {
+    //   const { accessToken, refreshoken } = getTokens( );
+    //   const token = accessToken || refreshoken;
+    //   if ( token ) {
+    //     return http.post( '/change_password', payload )
+    //       .then( response => enterSite( response ) );
+    //   } else {
+    //     return new Promise( resolve => resolve( true ) );
+    //   }
+    // }
   }
 };

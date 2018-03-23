@@ -83,7 +83,9 @@ v-content
 
 <script>
 export default {
-  props: ['token'],
+  props: {
+    token: String
+  },
   data: ( ) => ( {
     alertConfirmed: true,
     email: '',

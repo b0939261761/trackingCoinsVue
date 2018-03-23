@@ -54,29 +54,46 @@ v-content
               )
 
           v-card-actions
-            v-layout( row wrap )
-              v-btn(
-                @click='onRecovery'
-                flat
-              )
-                | Ввостановить пароль
-              v-spacer
-              v-btn(
-                  :disabled='isDisabled'
-                  @click='onSubmit'
-                  color='primary'
+            v-container( grid-list-md )
+              v-layout( row wrap )
+                v-flex(
                   xs12
+                  sm6
+                  md5
+                  lg4
+                  color="primary"
                 )
-                  | Вход
+                  v-btn(
+                    @click='onRecovery'
+                    flat
+                    block
+                  )
+                    | Ввостановить пароль
 
-              v-flex( xs12 )
-                v-alert(
-                  type='error'
-                  v-model='errorEnter'
-                  transition='scale-transition'
-                  dismissible
+                v-spacer( class='hidden-xs-only' )
+                v-flex(
+                  xs12
+                  sm4
+                  md3
+                  dark
+                  color="primary"
                 )
-                  | 'Неверный еmail или пароль'
+                  v-btn(
+                    :disabled='isDisabled'
+                    @click='onSubmit'
+                    color='primary'
+                    block
+                  )
+                    | Вход
+
+                v-flex( xs12 )
+                  v-alert(
+                    type='error'
+                    v-model='errorEnter'
+                    transition='scale-transition'
+                    dismissible
+                  )
+                    | 'Неверный еmail или пароль'
 </template>
 
 <script>

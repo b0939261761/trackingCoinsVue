@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import About from './views/About.vue';
-import Cookies from 'js-cookie';
+import { getTokens, removeTokens } from '@/cookies';
 import store from '@/store/';
 
 Vue.use( Router );
@@ -53,12 +53,12 @@ const router = new Router( {
           await store.dispatch( 'auth/confirmRecovery', token )
             .then( status => {
               if ( status ) {
-                routeName = 'newPassword';
+                routeName = 'changePassword';
               }
             } );
         }
 
-        router.push( { name: routeName } );
+        router.push( { name: routeName, params: { token } } );
       }
     },
     {
@@ -67,18 +67,24 @@ const router = new Router( {
       component: ( ) => import( '@/views/ErrorRecovery' )
     },
     {
-      path: '/new_password',
-      name: 'newPassword',
-      component: ( ) => import( '@/views/NewPassword' )
+      path: '/change_password',
+      name: 'changePassword',
+      component: ( ) => import( '@/views/ChangePassword' ),
+      props: true
     }
 
   ]
 } );
 
 router.beforeEach( ( to, from, next ) => {
-  if ( to.meta.requiresAuth && !Cookies.get( 'refreshToken' ) ) {
-    router.push( { name: 'signIn' } );
+  if ( to.meta.requiresAuth ) {
+    if ( !getTokens( ).refreshToken ) {
+      router.push( { name: 'signIn' } );
+    } else {
+      next( );
+    }
   } else {
+    removeTokens( );
     next( );
   }
 } );

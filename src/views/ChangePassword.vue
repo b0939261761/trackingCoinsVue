@@ -80,7 +80,7 @@ v-content
               v-btn(
                   @click='onSubmit'
                   color='primary'
-                  :disabled='isDisabledSave'
+                  :disabled='isDisabled'
                 )
                   | Сохранить
 </template>
@@ -108,8 +108,8 @@ export default {
         'Пароль изменен.' :
         'Операция завершилась неудачно, попробуйте позже.'
     },
-    isDisabledSave( ) {
-      return !this.password || !this.passwordConfirm || this.errors.any( );
+    isDisabled( ) {
+      return !this.password || !this.passwordConfirm || !this.token || this.errors.any( );
     },
     passType( ) {
       return this.passVisible ? 'text' : 'password';
@@ -134,10 +134,14 @@ export default {
     onSubmit () {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          this.$store.dispatch( 'auth/changePassword', { password: this.password } )
+          const payload = { password: this.password, token: this.token };
+          this.$store.dispatch( 'auth/changePassword', payload )
             .then( status => {
               this.isSubmit = true;
               this.isChange = status;
+              if ( status ) {
+                this.timer = setTimeout( ( ) => this.onGoHome( ), 5000 );
+              }
             } );
         }
       } )
@@ -151,6 +155,9 @@ export default {
     onGoHome( ) {
       this.$router.push( { name: 'home' } );
     }
+  },
+  beforeDestroy( ) {
+    clearTimeout( this.timer );
   }
 }
 </script>

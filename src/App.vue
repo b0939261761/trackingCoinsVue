@@ -18,11 +18,14 @@ export default {
 </script>
 
 <style>
+body {
+  font-family: Roboto, sans-serif;
+}
+
 .alert {
   width: 100%;
   text-align: left;
 }
-
 
 .fade-leave,
 .fade-leave-to,
