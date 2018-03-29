@@ -50,7 +50,7 @@ const router = new Router( {
         let routeName = 'errorRecovery';
 
         if ( token ) {
-          await store.dispatch( 'auth/confirmRecovery', token )
+          await store.dispatch( 'auth/confirmRecovery', { token } )
             .then( status => {
               if ( status ) {
                 routeName = 'changePassword';

@@ -3,13 +3,17 @@ import { setTokens, removeTokens } from '@/cookies';
 
 // Общий метод входа на сайт: SingIn, ConfrimRegistration, ConfirmPassword
 const enterSite = ( response ) => {
-  if ( response.data.status ) {
-    setTokens( response.data.access_token, response.data.refresh_token );
+  let status = response.data.status;
+  if ( status ) {
+    const { headers: { 'access-token': accessToken, 'refresh-token': refreshToken } } = response;
+    setTokens( accessToken, refreshToken );
   } else {
     removeTokens( );
   };
   return response.data.status;
 };
+
+const headersToken = ( token ) => ( { 'Authorization': `Bearer ${ token }` } );
 
 export default {
   namespaced: true,
@@ -26,24 +30,27 @@ export default {
       return http.post( '/check_user', { email } )
         .then( response => response.data.status );
     },
-    async confirmRegistration( _, token ) {
-      return http.post( '/confirm_registration', { token } )
+    async confirmRegistration( _, { token } ) {
+      const headers = headersToken( token );
+      return http.post( '/confirm_registration', null, { headers } )
         .then( response => enterSite( response ) );
     },
-    async repeatConfirmation( _, email ) {
+    async repeatConfirmation( _, { email } ) {
       return http.post( '/repeat_confirmation', { email } )
-        .then( response => enterSite( response ) );
+        .then( response => response.data.status );
     },
-    async recoveryPassword( _, email ) {
+    async recoveryPassword( _, { email } ) {
       return http.post( '/recovery_password', { email } )
         .then( response => response.data.status );
     },
-    async confirmRecovery( _, token ) {
-      return http.post( '/confirm_recovery', { token } )
+    async confirmRecovery( _, { token } ) {
+      const headers = headersToken( token );
+      return http.post( '/confirm_recovery', null, { headers } )
         .then( response => response.data.status );
     },
     async changePassword( _, { password, token } ) {
-      return http.post( '/change_password', { password, token } )
+      const headers = headersToken( token );
+      return http.post( '/change_password', { password }, { headers } )
         .then( response => enterSite( response ) );
     }
     // async changePassword( { commit }, payload ) {

@@ -96,7 +96,7 @@ export default {
     onSubmit () {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          this.$store.dispatch( 'auth/recoveryPassword', this.email )
+          this.$store.dispatch( 'auth/recoveryPassword', { email: this.email } )
             .then( status => {
               this.alertConfirmed = false;
               this.isSubmit = true;

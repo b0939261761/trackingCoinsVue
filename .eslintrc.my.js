@@ -35,6 +35,10 @@ module.exports = {
         after: true,
         overrides: { catch: { after: false } }
       }
-    ]
+    ],
+
+    // disallow unnecessary parentheses (no-extra-parens)
+    'no-extra-parens': [ 'error', 'all', { returnAssign: false } ]
+
   }
 }

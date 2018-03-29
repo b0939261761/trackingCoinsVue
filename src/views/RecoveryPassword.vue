@@ -70,31 +70,33 @@ export default {
     isSend: false
   } ),
   computed: {
-    alertSendType( ) { return this.isSend ? 'success' : 'error' },
+    alertSendType( ) {
+      return this.isSend ? 'success' : 'error';
+    },
     alertSendText( ) {
-      return this.isSend ?
-        'Письмо с ссылкой восстановления отправлено на email.' :
-        'Операция завершилась неудачно, попробуйте позже.'
+      return this.isSend
+        ? 'Письмо с ссылкой восстановления отправлено на email.'
+        : 'Операция завершилась неудачно, попробуйте позже.';
     },
     isDisabled( ) {
       return !this.email || this.errors.any( );
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit( ) {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          this.$store.dispatch( 'auth/recoveryPassword', this.email )
+          this.$store.dispatch( 'auth/recoveryPassword', { email: this.email } )
             .then( status => {
               this.isSubmit = true;
               this.isSend = status;
             } );
         }
-      } )
+      } );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
     }
   }
-}
+};
 </script>

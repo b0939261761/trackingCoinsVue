@@ -1,5 +1,4 @@
 <template lang='pug'>
-
 v-content
   v-container(
     fluid,
@@ -48,7 +47,6 @@ v-content
                 )
                   | Перейти на главную
 
-
           template( v-else )
 
             v-card-text( v-if='isSubmit' )
@@ -94,34 +92,38 @@ export default {
     isSend: false
   } ),
   computed: {
-    alertComfirmedType( ) { return this.isConfirmed ? 'success' : 'error' },
-    alertComfirmedText( ) {
-      return this.isConfirmed ?
-        'Аккаунт активирован.' :
-        'Ошибка при активации, попробуйте выслать подтверждение повторно.'
+    alertComfirmedType( ) {
+      return this.isConfirmed ? 'success' : 'error';
     },
-    alertSendType( ) { return this.isSend ? 'success' : 'error' },
+    alertComfirmedText( ) {
+      return this.isConfirmed
+        ? 'Аккаунт активирован.'
+        : 'Ошибка при активации, попробуйте выслать подтверждение повторно.';
+    },
+    alertSendType( ) {
+      return this.isSend ? 'success' : 'error';
+    },
     alertSendText( ) {
-      return this.isSend ?
-        'Письмо с ссылкой подтверждения отправлено на email.' :
-        'Операция завершилась неудачно, попробуйте позже.'
+      return this.isSend
+        ? 'Письмо с ссылкой подтверждения отправлено на email.'
+        : 'Операция завершилась неудачно, попробуйте позже.';
     },
     isDisabled( ) {
       return !this.email || this.errors.any( );
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit( ) {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          this.$store.dispatch( 'auth/repeatConfirmation', this.email )
+          this.$store.dispatch( 'auth/repeatConfirmation', { email: this.email } )
             .then( status => {
               this.alertConfirmed = false;
               this.isSubmit = true;
               this.isSend = status;
             } );
         }
-      } )
+      } );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
@@ -131,20 +133,20 @@ export default {
     }
   },
   created( ) {
-    if ( this.$route.query ) history.replaceState(null, null, this.$route.path );
+    if ( this.$route.query ) history.replaceState( null, null, this.$route.path );
 
     if ( this.token ) {
-      this.$store.dispatch( 'auth/confirmRegistration', this.token )
+      this.$store.dispatch( 'auth/confirmRegistration', { token: this.token } )
         .then( status => {
-          this.isConfirmed = status
+          this.isConfirmed = status;
           if ( status ) {
             this.timer = setTimeout( ( ) => this.onGoHome( ), 2000 );
           }
-        } )
+        } );
     }
   },
   beforeDestroy( ) {
     clearTimeout( this.timer );
   }
-}
+};
 </script>

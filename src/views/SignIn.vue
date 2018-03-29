@@ -36,6 +36,7 @@ v-content
               v-text-field(
                 label='E-mail',
                 v-model='email',
+                @keyup.enter='$refs.password.focus( )'
                 :error-messages="errors.collect('email')"
                 v-validate="'required|email'"
                 data-vv-name='email'
@@ -44,6 +45,8 @@ v-content
               v-text-field(
                 label='Пароль'
                 v-model='password'
+                @keyup.enter='onSubmit'
+                ref='password'
                 :append-icon='passIcon'
                 :append-icon-cb='passIconClick'
                 :error-messages="errors.collect('password')"
@@ -112,30 +115,30 @@ export default {
       return this.passVisible ? 'text' : 'password';
     },
     passIcon( ) {
-      return this.passVisible ? 'visibility' : 'visibility_off'
+      return this.passVisible ? 'visibility' : 'visibility_off';
     },
     passIconClick( ) {
       return ( ) => this.passVisible = !this.passVisible;
     }
   },
   methods: {
-    onSubmit () {
-      const { email, password } = this
+    onSubmit( ) {
+      const { email, password } = this;
       this.$store.dispatch( 'auth/signIn', { email, password } )
         .then( status => {
           if ( status ) {
-            this.$router.push( { name: 'home' } )
+            this.$router.push( { name: 'home' } );
           } else {
             this.errorEnter = true;
           }
         } );
     },
-    onRecovery () {
-      this.$router.push( { name: 'recoveryPassword' } )
+    onRecovery( ) {
+      this.$router.push( { name: 'recoveryPassword' } );
     },
-    onSignUp () {
-      this.$router.push( { name: 'signUp' } )
+    onSignUp( ) {
+      this.$router.push( { name: 'signUp' } );
     }
   }
-}
+};
 </script>
