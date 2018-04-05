@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import About from './views/About.vue';
 import { getTokens, removeTokens } from '@/cookies';
 import store from '@/store/';
 
@@ -13,13 +11,15 @@ const router = new Router( {
     {
       path: '/',
       name: 'home',
-      component: Home,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About
+      component: ( ) => import( '@/views/Home' ),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'settings',
+          name: 'settings',
+          component: ( ) => import( '@/views/Settings' )
+        }
+      ]
     },
     {
       path: '/sign_in',

@@ -20,33 +20,36 @@ v-content
             color='primary'
           )
             v-toolbar-title
-              | Ввостановление пароля
+              | {{ $t('toolbarTitle') }}
 
             v-spacer
             v-btn(
               @click='onBack'
               flat
               small
-              color="white"
+              color='white'
             )
-              | Назад
+              | {{ $t('buttonBack') }}
+
+            ChooseLang
 
           v-card-text( v-if='isSubmit' )
             v-alert(
-              :type='alertSendType'
+              :type='isSend ? "success" : "error"'
               value='true'
               transition='scale-transition'
               )
-                | {{ alertSendText }}
+                | {{ isSend ? $t( 'sendSuccess' ) : $t( 'sendFail' ) }}
 
           template( v-else )
             v-card-text
               form( @submit.prevent='onSubmit' )
                 v-text-field(
-                  label='E-mail',
+                  :label='$t("email")',
                   v-model='email',
-                  :error-messages="errors.collect('email')"
-                  v-validate="{ required: true, email: true, uncheck_email: true }"
+                  @keyup.enter='onSubmit'
+                  :error-messages='errors.collect("email")'
+                  v-validate='{ required: true, email: true, uncheck_email: true }'
                   data-vv-delay='500'
                   data-vv-name='email'
                 )
@@ -58,7 +61,7 @@ v-content
                   @click='onSubmit'
                   color='primary'
                 )
-                  | Выслать
+                  | {{ $t('buttonSubmit') }}
 </template>
 
 <script>
@@ -70,14 +73,6 @@ export default {
     isSend: false
   } ),
   computed: {
-    alertSendType( ) {
-      return this.isSend ? 'success' : 'error';
-    },
-    alertSendText( ) {
-      return this.isSend
-        ? 'Письмо с ссылкой восстановления отправлено на email.'
-        : 'Операция завершилась неудачно, попробуйте позже.';
-    },
     isDisabled( ) {
       return !this.email || this.errors.any( );
     }
@@ -96,6 +91,22 @@ export default {
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
+    }
+  },
+  i18n: {
+    messages: {
+      en: {
+        toolbarTitle: 'Password recovery',
+        buttonSubmit: 'Send',
+        sendSuccess: 'A letter with a recovery link has been sent to the email address.',
+        sendFail: 'The operation failed, please try again later.'
+      },
+      ru: {
+        toolbarTitle: 'Восстановить пароль',
+        buttonSubmit: 'Выслать',
+        sendSuccess: 'Письмо с ссылкой восстановления отправлено на email.',
+        sendFail: 'Операция завершилась неудачно, попробуйте позже.'
+      }
     }
   }
 };

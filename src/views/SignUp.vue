@@ -20,70 +20,77 @@ v-content
             color='primary'
           )
             v-toolbar-title
-              | Регистрация
+              | {{ $t('toolbarTitle') }}
 
             v-spacer
+
             v-btn(
               @click='onBack'
               flat
               small
-              color="white"
+              color='white'
             )
-              | Назад
+              | {{ $t('buttonBack') }}
+
+            ChooseLang
 
           v-card-text( v-if='isSubmit' )
             v-alert(
-                :type='alertType'
+                :type='isSend ? "success" : "error"'
                 :value='true'
                 transition='scale-transition'
               )
-                | {{ alertText }}
+                | {{ isSend ? $t( 'sendSuccess' ) : $t( 'sendFail' ) }}
 
           template( v-else )
             v-card-text
               form( @submit.prevent='onSubmit' )
 
                 v-text-field(
-                  label='Имя',
+                  :label='$t("username")',
                   v-model='username',
-                  :error-messages="errors.collect('username')"
-                  v-validate="'required'"
-                  data-vv-name="username"
-                  data-vv-as='Имя'
+                  @keyup.enter='$refs.email.focus( )'
+                  :error-messages='errors.collect("username")'
+                  v-validate='{ required: true, min: 5, max: 30, alpha: true }'
+                  data-vv-name='username'
                 )
 
                 v-text-field(
-                  label='E-mail',
+                  :label='$t("email")',
                   v-model='email',
-                  :error-messages="errors.collect('email')"
+                  ref='email'
+                  @keyup.enter='$refs.password.focus( )'
+                  :error-messages='errors.collect("email")'
                   v-validate='{ required: true, email: true, check_email: true }'
                   data-vv-delay='500'
                   data-vv-name='email'
                 )
 
                 v-text-field(
-                  label='Пароль'
+                  :label='$t("password")'
                   v-model='password'
-                  :append-icon='passIcon'
-                  :append-icon-cb='passIconClick'
-                  :error-messages="errors.collect('password')"
-                  :type='passType'
+                  ref='password'
+                  @keyup.enter='$refs.passwordConfirm.focus( )'
+                  :append-icon='passVisible ? "visibility" : "visibility_off"'
+                  :append-icon-cb='( ) => passVisible = !passVisible'
+                  :error-messages='errors.collect("password")'
+                  :type='passVisible ? "text" : "password"'
                   name='password'
-                  v-validate="'required'"
+                  v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'
                   data-vv-name='password'
-                  data-vv-as='Пароль'
                 )
 
                 v-text-field(
-                  label='Подтверждение пароля'
+                  :label='$t("passwordConfirm")'
                   v-model='passwordConfirm'
-                  :append-icon='passConfIcon'
-                  :append-icon-cb='passConfIconClick'
-                  :error-messages="errors.collect('passwordConfirm')"
-                  :type='passConfType'
-                  v-validate="'required|confirmed:password'"
+                  ref='passwordConfirm'
+                  @keyup.enter='onSubmit'
+                  :append-icon='passConfirmVisible ? "visibility" : "visibility_off"'
+                  :append-icon-cb='( ) => passConfirmVisible = !passConfirmVisible'
+                  :error-messages='errors.collect("passwordConfirm")'
+                  :type='passConfirmVisible ? "text" : "password"'
+                  v-validate='{ confirmed: "password" }'
                   data-vv-name='passwordConfirm'
-                  data-vv-as='Подтверждение пароля'
                 )
 
             v-card-actions
@@ -93,7 +100,7 @@ v-content
                     @click='onSubmit'
                     color='primary'
                   )
-                    | Зарегистрироваться
+                    | {{ $t('buttonSubmit') }}
 </template>
 
 <script>
@@ -104,56 +111,47 @@ export default {
     password: '',
     passwordConfirm: '',
     passVisible: false,
-    passConfVisible: false,
+    passConfirmVisible: false,
     isSubmit: false,
     isSend: true
   } ),
   computed: {
-    alertType( ) { return this.isSend ? 'success' : 'error' },
-    alertText( ) {
-      return this.isSend ?
-        'Письмо с ссылкой подтверждения отправлено на email.' :
-        'Регистрация завершилась неудачно, попробуйте позже.'
-    },
     isDisabled( ) {
       return !this.username || !this.email || !this.password || !this.passwordConfirm || this.errors.any( );
-    },
-    passType( ) {
-      return this.passVisible ? 'text' : 'password';
-    },
-    passIcon( ) {
-      return this.passVisible ? 'visibility' : 'visibility_off'
-    },
-    passIconClick( ) {
-      return ( ) => this.passVisible = !this.passVisible;
-    },
-    passConfType( ) {
-      return this.passConfVisible ? 'text' : 'password';
-    },
-    passConfIcon( ) {
-      return this.passConfVisible ? 'visibility' : 'visibility_off'
-    },
-    passConfIconClick( ) {
-      return ( ) => this.passConfVisible = !this.passConfVisible;
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit( ) {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
-          const { username, email, password } = this
+          const { username, email, password } = this;
           this.$store.dispatch( 'auth/signUp', { username, email, password } )
             .then( status => {
               this.isSend = status;
               this.isSubmit = true;
             } );
         }
-      } )
-
+      } );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
     }
+  },
+  i18n: {
+    messages: {
+      en: {
+        toolbarTitle: 'Create account',
+        buttonSubmit: 'Sign Up',
+        sendSuccess: 'A confirmation email has been sent to your email address.',
+        sendFail: 'Registration failed, please try again later.'
+      },
+      ru: {
+        toolbarTitle: 'Регистрация',
+        buttonSubmit: 'Зарегистрироваться',
+        sendSuccess: 'Письмо с ссылкой подтверждения отправлено на email.',
+        sendFail: 'Регистрация завершилась неудачно, попробуйте позже.'
+      }
+    }
   }
-}
+};
 </script>

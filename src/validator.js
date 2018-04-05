@@ -1,24 +1,58 @@
+import Vue from 'vue';
 import store from '@/store/';
 
-import { Validator } from 'vee-validate';
+import VeeValidate, { Validator } from 'vee-validate';
 import ru from 'vee-validate/dist/locale/ru';
 
-Validator.localize( 'ru', ru );
+import i18nEn from '@/lang/en';
+import i18nRu from '@/lang/ru';
 
-Validator.extend( 'uncheck_email', {
-  getMessage: field => `Пользователь с данным email отсуствует.`,
-  validate: value => new Promise( ( resolve ) =>
+Validator.extend( 'uncheck_email', value =>
+  new Promise( ( resolve ) =>
     store.dispatch( 'auth/checkUser', value )
       .then( status => resolve( { valid: status } ) )
   )
-} );
+);
 
-Validator.extend( 'check_email', {
-  getMessage: field => `Пользователь с данным email существует.`,
-  validate: value => new Promise( ( resolve ) =>
+Validator.extend( 'check_email', value =>
+  new Promise( ( resolve ) =>
     store.dispatch( 'auth/checkUser', value )
       .then( status => resolve( { valid: !status } ) )
   )
-} );
+);
+
+const getAttributes = ( { email, password, passwordConfirm, username } ) =>
+  ( { email, password, passwordConfirm, username } )
+
+const dictionary = {
+  en: {
+    messages: {
+      check_email: ( ) => 'A user with this email exists.',
+      uncheck_email: ( ) => 'User with this email is not registered'
+    },
+    attributes: {
+      ...getAttributes( i18nEn )
+    }
+  },
+  ru: {
+    messages: {
+      check_email: ( ) => 'Пользователь с данным email существует.',
+      uncheck_email: ( ) => 'Пользователь с данным email не зарегистрирован.'
+    },
+    attributes: {
+      ...getAttributes( i18nRu )
+    }
+  }
+};
+
+Validator.localize( 'ru', ru );
+Validator.localize( dictionary );
+
+const Veeconfig = {
+  locale: 'en'
+  // events: 'blur'
+};
+
+Vue.use( VeeValidate, Veeconfig );
 
 export default Validator;

@@ -9,10 +9,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/test-utils": "^1.0.0-beta.11",
     "axios": "^0.18.0",
     "js-cookie": "^2.2.0",
-    "vee-validate": "2.0.5",
+    "node-sass": "^4.7.2",
+    "pug": "^2.0.1",
+    "vee-validate": "^2.0.6",
     "vue": "^2.5.13",
+    "vue-i18n": "^7.6.0",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.6",
     "vuex": "^3.0.1"
@@ -23,11 +27,9 @@
     "@vue/cli-plugin-unit-jest": "^3.0.0-beta.6",
     "@vue/cli-service": "latest",
     "@vue/eslint-config-standard": "^3.0.0-beta.6",
-    "@vue/test-utils": "^1.0.0-beta.10",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^22.0.4",
-    "node-sass": "^4.7.2",
-    "pug": "^2.0.1",
+    "flush-promises": "^1.0.0",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
   },

@@ -7,16 +7,21 @@ import store from '@/store/';
 
 import Vuetify from 'vuetify';
 
-import VeeValidate from 'vee-validate';
 import '@/validator';
 
-Vue.use( VeeValidate );
+import i18n from '@/lang/index';
+
+import ChooseLang from '@/components/ChooseLang';
+
 Vue.use( Vuetify );
 
 Vue.config.productionTip = false;
 
+Vue.component( 'ChooseLang', ChooseLang );
+
 new Vue( {
   router,
   store,
+  i18n,
   render: h => h( App )
 } ).$mount( '#app' );

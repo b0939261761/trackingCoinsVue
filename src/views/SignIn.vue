@@ -26,34 +26,35 @@ v-content
               @click='onSignUp'
               flat
               small
-              color="white"
+              color='white'
             )
-              | Регистрация
+              | {{ $t('buttonSignUp') }}
+
+            ChooseLang
 
           v-card-text
             form( @submit.prevent='onSubmit' )
 
               v-text-field(
-                label='E-mail',
+                :label='$t("email")',
                 v-model='email',
                 @keyup.enter='$refs.password.focus( )'
-                :error-messages="errors.collect('email')"
-                v-validate="'required|email'"
+                :error-messages='errors.collect("email")'
+                v-validate='{ required: true, email: true }'
                 data-vv-name='email'
               )
 
               v-text-field(
-                label='Пароль'
+                :label='$t("password")'
                 v-model='password'
                 @keyup.enter='onSubmit'
                 ref='password'
-                :append-icon='passIcon'
-                :append-icon-cb='passIconClick'
-                :error-messages="errors.collect('password')"
-                :type='passType'
-                v-validate="'required'"
+                :append-icon='passVisible ? "visibility" : "visibility_off"'
+                :append-icon-cb='( ) => this.passVisible = !this.passVisible'
+                :error-messages='errors.collect("password")'
+                :type='passVisible ? "text" : "password"'
+                v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'
                 data-vv-name='password'
-                data-vv-as='Пароль'
               )
 
           v-card-actions
@@ -64,14 +65,14 @@ v-content
                   sm6
                   md5
                   lg4
-                  color="primary"
+                  color='primary'
                 )
                   v-btn(
                     @click='onRecovery'
                     flat
                     block
                   )
-                    | Ввостановить пароль
+                    | {{ $t("recoveryPassword") }}
 
                 v-spacer( class='hidden-xs-only' )
                 v-flex(
@@ -79,7 +80,7 @@ v-content
                   sm4
                   md3
                   dark
-                  color="primary"
+                  color='primary'
                 )
                   v-btn(
                     :disabled='isDisabled'
@@ -87,7 +88,7 @@ v-content
                     color='primary'
                     block
                   )
-                    | Вход
+                    | {{ $t('buttonSubmit') }}
 
                 v-flex( xs12 )
                   v-alert(
@@ -96,7 +97,7 @@ v-content
                     transition='scale-transition'
                     dismissible
                   )
-                    | 'Неверный еmail или пароль'
+                    | {{ $t('errorEnter') }}
 </template>
 
 <script>
@@ -110,34 +111,45 @@ export default {
   computed: {
     isDisabled( ) {
       return !this.email || !this.password || this.errors.any( );
-    },
-    passType( ) {
-      return this.passVisible ? 'text' : 'password';
-    },
-    passIcon( ) {
-      return this.passVisible ? 'visibility' : 'visibility_off';
-    },
-    passIconClick( ) {
-      return ( ) => this.passVisible = !this.passVisible;
     }
   },
   methods: {
     onSubmit( ) {
-      const { email, password } = this;
-      this.$store.dispatch( 'auth/signIn', { email, password } )
-        .then( status => {
-          if ( status ) {
-            this.$router.push( { name: 'home' } );
-          } else {
-            this.errorEnter = true;
-          }
-        } );
+      this.$validator.validateAll( ).then( result => {
+        if ( result ) {
+          const { email, password } = this;
+          this.$store.dispatch( 'auth/signIn', { email, password } )
+            .then( status => {
+              if ( status ) {
+                this.$router.push( { name: 'home' } );
+              } else {
+                this.errorEnter = true;
+              }
+            } );
+        }
+      } );
     },
     onRecovery( ) {
       this.$router.push( { name: 'recoveryPassword' } );
     },
     onSignUp( ) {
       this.$router.push( { name: 'signUp' } );
+    }
+  },
+  i18n: {
+    messages: {
+      en: {
+        buttonSignUp: 'Sign Up',
+        buttonSubmit: 'Enter',
+        recoveryPassword: 'Password recovery',
+        errorEnter: 'Неверный еmail или пароль.'
+      },
+      ru: {
+        buttonSignUp: 'Регистрация',
+        buttonSubmit: 'Вход',
+        recoveryPassword: 'Восстановить пароль',
+        errorEnter: 'Неверный еmail или пароль.'
+      }
     }
   }
 };

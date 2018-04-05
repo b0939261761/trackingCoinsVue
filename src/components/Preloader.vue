@@ -21,9 +21,11 @@ v-container(
 export default {
   name: 'Preloader',
   computed: {
-    isShow( ) { return this.$store.state.isLoader }
+    isShow( ) {
+      return this.$store.state.isLoader;
+    }
   }
-}
+};
 </script>
 
 <style scoped>

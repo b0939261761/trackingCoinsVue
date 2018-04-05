@@ -20,55 +20,56 @@ v-content
             color='primary'
           )
             v-toolbar-title
-              | Восстановление пароля
+              | {{ $t('toolbarTitle') }}
 
             v-spacer
             v-btn(
               @click='onBack'
               flat
               small
-              color="white"
+              color='white'
             )
-              | Назад
+              | {{ $t('buttonBack') }}
 
-          template( v-if='!isConfirmed' )
+            ChooseLang
 
-            v-card-text( v-show='alertConfirmed' )
-              v-alert(
-                v-model='alertConfirmed'
-                type='error'
-                dismissible
-              )
-                | Ошибка при восстановления, попробуйте выслать подтверждение повторно.
+          v-card-text( v-show='alertConfirmed' )
+            v-alert(
+              v-model='alertConfirmed'
+              type='error'
+              dismissible
+            )
+              | {{ $t('confirmedFail') }}
 
-            v-card-text( v-if='isSubmit' )
-              v-alert(
-                :type='alertSendType'
-                value='true'
-                transition='scale-transition'
+          v-card-text( v-if='isSubmit' )
+            v-alert(
+              :type='isSend ? "success" : "error"'
+              :value='true'
+              transition='scale-transition'
+            )
+              | {{ isSend ? $t( 'sendSuccess' ) : $t( 'sendFail' ) }}
+
+          template( v-else )
+            v-card-text
+              form( @submit.prevent='onSubmit' )
+                v-text-field(
+                  :label='$t("email")',
+                  v-model='email',
+                  @keyup.enter='onSubmit'
+                  :error-messages='errors.collect("email")'
+                  v-validate='{ required: true, email: true, uncheck_email: true }'
+                  data-vv-delay='500'
+                  data-vv-name='email'
                 )
-                  | {{ alertSendText }}
 
-            template( v-else )
-              v-card-text
-                form( @submit.prevent='onSubmit' )
-                  v-text-field(
-                    label='E-mail',
-                    v-model='email',
-                    :error-messages="errors.collect('email')"
-                    v-validate="{ required: true, email: true, uncheck_email: true }"
-                    data-vv-delay='500'
-                    data-vv-name='email'
-                  )
-
-              v-card-actions
-                v-spacer
-                v-btn(
-                    :disabled='isDisabled'
-                    @click='onSubmit'
-                    color='primary'
-                  )
-                    | Выслать
+            v-card-actions
+              v-spacer
+              v-btn(
+                  :disabled='isDisabled'
+                  @click='onSubmit'
+                  color='primary'
+                )
+                  | {{ $t('buttonSubmit') }}
 </template>
 
 <script>
@@ -77,23 +78,16 @@ export default {
   data: ( ) => ( {
     alertConfirmed: true,
     email: '',
-    isConfirmed: false,
     isSubmit: false,
     isSend: false
   } ),
   computed: {
-    alertSendType( ) { return this.isSend ? 'success' : 'error' },
-    alertSendText( ) {
-      return this.isSend ?
-        'Письмо с ссылкой подтверждения отправлено на email.' :
-        'Операция завершилась неудачно, попробуйте позже.'
-    },
     isDisabled( ) {
       return !this.email || this.errors.any( );
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit( ) {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
           this.$store.dispatch( 'auth/recoveryPassword', { email: this.email } )
@@ -101,14 +95,31 @@ export default {
               this.alertConfirmed = false;
               this.isSubmit = true;
               this.isSend = status;
-              console.log( status )
             } );
         }
-      } )
+      } );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
     }
+  },
+  i18n: {
+    messages: {
+      en: {
+        toolbarTitle: 'Password recovery',
+        buttonSubmit: 'Send',
+        confirmedFail: 'Error while restoring, try sending confirmation again.',
+        sendSuccess: 'A letter with a recovery link has been sent to the email address.',
+        sendFail: 'The operation failed, please try again later.'
+      },
+      ru: {
+        toolbarTitle: 'Восстановление пароля',
+        buttonSubmit: 'Выслать',
+        confirmedFail: 'Ошибка при восстановления, попробуйте выслать подтверждение повторно.',
+        sendSuccess: 'Письмо с ссылкой восстановления отправлено на email.',
+        sendFail: 'Операция завершилась неудачно, попробуйте позже.'
+      }
+    }
   }
-}
+};
 </script>

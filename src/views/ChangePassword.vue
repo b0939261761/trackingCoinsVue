@@ -20,59 +20,64 @@ v-content
             color='primary'
           )
             v-toolbar-title
-              | Новый пароль
+              | {{ $t('toolbarTitle') }}
 
             v-spacer
             v-btn(
               @click='onBack'
               flat
               small
-              color="white"
+              color='white'
             )
-              | Назад
+              | {{ $t('buttonBack') }}
+
+            ChooseLang
 
           template( v-if='isSubmit' )
             v-card-text
               v-alert(
-                :type='alertSendType'
-                value='true'
+                :type='isSend ? "success" : "error"'
+                :value='true'
                 transition='scale-transition'
-                )
-                  | {{ alertSendText }}
+              )
+                | {{ isSend ? $t( 'sendSuccess' ) : $t( 'sendFail' ) }}
 
-            v-card-actions( v-if='isChange' )
+            v-card-actions( v-if='isSend' )
               v-spacer
               v-btn(
                   @click='onGoHome'
                   color='primary'
                 )
-                  | Перейти на главную
+                  | {{ $t('buttonGoHome') }}
 
           template( v-else )
             v-card-text
+
               v-text-field(
-                label='Пароль'
+                :label='$t("password")'
                 v-model='password'
-                :append-icon='passIcon'
-                :append-icon-cb='passIconClick'
-                :error-messages="errors.collect('password')"
-                :type='passType'
+                ref='password'
+                @keyup.enter='$refs.passwordConfirm.focus( )'
+                :append-icon='passVisible ? "visibility" : "visibility_off"'
+                :append-icon-cb='( ) => passVisible = !passVisible'
+                :error-messages='errors.collect("password")'
+                :type='passVisible ? "text" : "password"'
                 name='password'
-                v-validate="'required'"
+                v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'
                 data-vv-name='password'
-                data-vv-as='Пароль'
               )
 
               v-text-field(
-                label='Подтверждение пароля'
+                :label='$t("passwordConfirm")'
                 v-model='passwordConfirm'
-                :append-icon='passConfIcon'
-                :append-icon-cb='passConfIconClick'
-                :error-messages="errors.collect('passwordConfirm')"
-                :type='passConfType'
-                v-validate="'required|confirmed:password'"
+                ref='passwordConfirm'
+                @keyup.enter='onSubmit'
+                :append-icon='passConfirmVisible ? "visibility" : "visibility_off"'
+                :append-icon-cb='( ) => passConfirmVisible = !passConfirmVisible'
+                :error-messages='errors.collect("passwordConfirm")'
+                :type='passConfirmVisible ? "text" : "password"'
+                v-validate='{ confirmed: "password" }'
                 data-vv-name='passwordConfirm'
-                data-vv-as='Подтверждение пароля'
               )
 
             v-card-actions
@@ -82,7 +87,7 @@ v-content
                   color='primary'
                   :disabled='isDisabled'
                 )
-                  | Сохранить
+                  | {{ $t('buttonSubmit') }}
 </template>
 
 <script>
@@ -95,62 +100,33 @@ export default {
     password: '',
     passwordConfirm: '',
     passVisible: false,
-    passConfVisible: false,
+    passConfirmVisible: false,
     isSubmit: false,
-    isChange: false
+    isSend: false
   } ),
   computed: {
-    alertSendType( ) {
-      return this.isChange ? 'success' : 'error'
-    },
-    alertSendText( ) {
-      return this.isChange ?
-        'Пароль изменен.' :
-        'Операция завершилась неудачно, попробуйте позже.'
-    },
     isDisabled( ) {
       return !this.password || !this.passwordConfirm || !this.token || this.errors.any( );
-    },
-    passType( ) {
-      return this.passVisible ? 'text' : 'password';
-    },
-    passIcon( ) {
-      return this.passVisible ? 'visibility' : 'visibility_off'
-    },
-    passIconClick( ) {
-      return ( ) => this.passVisible = !this.passVisible;
-    },
-    passConfType( ) {
-      return this.passConfVisible ? 'text' : 'password';
-    },
-    passConfIcon( ) {
-      return this.passConfVisible ? 'visibility' : 'visibility_off'
-    },
-    passConfIconClick( ) {
-      return ( ) => this.passConfVisible = !this.passConfVisible;
     }
   },
   methods: {
-    onSubmit () {
+    onSubmit( ) {
       this.$validator.validateAll( ).then( result => {
         if ( result ) {
           const payload = { password: this.password, token: this.token };
           this.$store.dispatch( 'auth/changePassword', payload )
             .then( status => {
               this.isSubmit = true;
-              this.isChange = status;
+              this.isSend = status;
               if ( status ) {
                 this.timer = setTimeout( ( ) => this.onGoHome( ), 5000 );
               }
             } );
         }
-      } )
+      } );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
-    },
-    onSave( ) {
-      this.$router.push( { name: 'home' } );
     },
     onGoHome( ) {
       this.$router.push( { name: 'home' } );
@@ -158,6 +134,22 @@ export default {
   },
   beforeDestroy( ) {
     clearTimeout( this.timer );
+  },
+  i18n: {
+    messages: {
+      en: {
+        toolbarTitle: 'New password',
+        buttonSubmit: 'Save',
+        sendSuccess: 'The password has been changed.',
+        sendFail: 'The operation failed, please try again later.'
+      },
+      ru: {
+        toolbarTitle: 'Новый пароль',
+        buttonSubmit: 'Сохранить',
+        sendSuccess: 'The password has been changed.',
+        sendFail: 'Операция завершилась неудачно, попробуйте позже.'
+      }
+    }
   }
 }
 </script>

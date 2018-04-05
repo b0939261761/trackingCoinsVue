@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import auth from './modules/auth';
 
 import state from './state';
+import getters from './getters';
 import mutations from './mutations';
 
 Vue.use( Vuex );
@@ -13,5 +14,6 @@ export default new Vuex.Store( {
     auth
   },
   state,
+  getters,
   mutations
 } );
