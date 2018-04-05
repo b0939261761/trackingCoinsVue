@@ -141,7 +141,7 @@ export default {
       en: {
         buttonSignUp: 'Sign Up',
         buttonSubmit: 'Enter',
-        recoveryPassword: 'Password recovery',
+        recoveryPassword: 'Forgot your password?',
         errorEnter: 'Неверный еmail или пароль.'
       },
       ru: {
