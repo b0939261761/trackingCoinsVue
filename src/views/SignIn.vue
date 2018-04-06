@@ -142,7 +142,7 @@ export default {
         buttonSignUp: 'Sign Up',
         buttonSubmit: 'Enter',
         recoveryPassword: 'Forgot your password?',
-        errorEnter: 'Неверный еmail или пароль.'
+        errorEnter: 'Incorrect username or password!'
       },
       ru: {
         buttonSignUp: 'Регистрация',
