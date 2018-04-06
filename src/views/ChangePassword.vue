@@ -146,7 +146,7 @@ export default {
       ru: {
         toolbarTitle: 'Новый пароль',
         buttonSubmit: 'Сохранить',
-        sendSuccess: 'The password has been changed.',
+        sendSuccess: 'Пароль был изменен.',
         sendFail: 'Операция завершилась неудачно, попробуйте позже.'
       }
     }

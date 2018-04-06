@@ -140,9 +140,9 @@ export default {
     messages: {
       en: {
         buttonSignUp: 'Sign Up',
-        buttonSubmit: 'Enter',
+        buttonSubmit: 'Login',
         recoveryPassword: 'Forgot your password?',
-        errorEnter: 'Incorrect username or password!'
+        errorEnter: 'Incorrect еmail or password'
       },
       ru: {
         buttonSignUp: 'Регистрация',

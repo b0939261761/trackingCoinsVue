@@ -107,7 +107,7 @@ export default {
     messages: {
       en: {
         toolbarTitle: 'Password recovery',
-        buttonSubmit: 'Send',
+        buttonSubmit: 'Send password',
         confirmedFail: 'Error while restoring, try sending confirmation again.',
         sendSuccess: 'A letter with a recovery link has been sent to the email address.',
         sendFail: 'The operation failed, please try again later.'

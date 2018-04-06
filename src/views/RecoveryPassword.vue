@@ -97,13 +97,13 @@ export default {
     messages: {
       en: {
         toolbarTitle: 'Password recovery',
-        buttonSubmit: 'Send',
-        sendSuccess: 'A letter with a recovery link has been sent to the email address.',
+        buttonSubmit: 'Send password',
+        sendSuccess: 'Check your email for a link to reset your password.',
         sendFail: 'The operation failed, please try again later.'
       },
       ru: {
         toolbarTitle: 'Восстановить пароль',
-        buttonSubmit: 'Выслать',
+        buttonSubmit: 'Выслать пароль',
         sendSuccess: 'Письмо с ссылкой восстановления отправлено на email.',
         sendFail: 'Операция завершилась неудачно, попробуйте позже.'
       }
