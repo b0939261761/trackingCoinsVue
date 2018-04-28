@@ -1,25 +1,24 @@
 <template lang='pug'>
 v-content
   v-container(
-    fluid,
+    fluid
     fill-height
   )
     v-layout(
-      align-center,
+      align-center
       justify-center
     )
       v-flex(
-        xs12,
-        sm8,
+        xs12
+        sm8
         md6
       )
         v-card
           v-toolbar(
-            dark,
+            dark
             color='primary'
           )
-            v-toolbar-title
-              | Reality Coins
+            v-toolbar-title( v-text='"Reality Coins"' )
 
             v-spacer
             v-btn(
@@ -27,8 +26,8 @@ v-content
               flat
               small
               color='white'
+              v-text='$t("buttonSignUp")'
             )
-              | {{ $t('buttonSignUp') }}
 
             ChooseLang
 
@@ -36,12 +35,14 @@ v-content
             form( @submit.prevent='onSubmit' )
 
               v-text-field(
-                :label='$t("email")',
-                v-model='email',
+                v-focus
+                data-focus
+                :label='$t("email")'
+                id='email'
+                v-model='email'
                 @keyup.enter='$refs.password.focus( )'
                 :error-messages='errors.collect("email")'
                 v-validate='{ required: true, email: true }'
-                data-vv-name='email'
               )
 
               v-text-field(
@@ -59,45 +60,32 @@ v-content
 
           v-card-actions
             v-container( grid-list-md )
-              v-layout( row wrap )
+              v-layout( wrap )
                 v-flex(
                   xs12
                   sm6
                   md5
-                  lg4
-                  color='primary'
                 )
                   v-btn(
                     @click='onRecovery'
                     flat
                     block
+                    v-text='$t("recoveryPassword")'
                   )
-                    | {{ $t("recoveryPassword") }}
 
                 v-spacer( class='hidden-xs-only' )
                 v-flex(
                   xs12
                   sm4
                   md3
-                  dark
-                  color='primary'
                 )
                   v-btn(
                     :disabled='isDisabled'
                     @click='onSubmit'
                     color='primary'
                     block
+                    v-text='$t("buttonSubmit")'
                   )
-                    | {{ $t('buttonSubmit') }}
-
-                v-flex( xs12 )
-                  v-alert(
-                    type='error'
-                    v-model='errorEnter'
-                    transition='scale-transition'
-                    dismissible
-                  )
-                    | {{ $t('errorEnter') }}
 </template>
 
 <script>
@@ -105,8 +93,7 @@ export default {
   data: ( ) => ( {
     email: '',
     password: '',
-    passVisible: false,
-    errorEnter: false
+    passVisible: false
   } ),
   computed: {
     isDisabled( ) {
@@ -114,20 +101,21 @@ export default {
     }
   },
   methods: {
-    onSubmit( ) {
-      this.$validator.validateAll( ).then( result => {
-        if ( result ) {
-          const { email, password } = this;
-          this.$store.dispatch( 'auth/signIn', { email, password } )
-            .then( status => {
-              if ( status ) {
-                this.$router.push( { name: 'home' } );
-              } else {
-                this.errorEnter = true;
-              }
-            } );
+    async onSubmit( ) {
+      this.isSubmitProcess = true;
+
+      if ( await this.$validator.validateAll( ) ) {
+        const { email, password } = this;
+        try {
+          await this.$store.dispatch( 'auth/signIn', { email, password } );
+          this.$router.push( { name: 'home' } );
+        } catch ( error ) {
+          this.email = '';
+          this.password = '';
         }
-      } );
+      }
+
+      this.isSubmitProcess = true;
     },
     onRecovery( ) {
       this.$router.push( { name: 'recoveryPassword' } );

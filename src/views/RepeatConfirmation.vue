@@ -34,7 +34,7 @@ v-content
           v-card-text( v-if='isSubmit' )
             v-alert(
               type='success'
-              value='true'
+              :value='true'
               transition='scale-transition'
             )
               | {{ $t('submitMessage') }}
@@ -42,6 +42,7 @@ v-content
           template( v-else )
             v-card-text
               form( @submit.prevent='onSubmit' )
+
                 v-text-field(
                   v-focus
                   data-focus
@@ -69,7 +70,7 @@ v-content
                       @click='onSubmit'
                       color='primary'
                       block
-                      v-text='$t("buttonSubmit")'
+                      v-text='$t("send")'
                     )
 </template>
 
@@ -77,6 +78,7 @@ v-content
 import debounce from 'lodash/debounce';
 
 export default {
+  name: 'RepeatConfirmation',
   data: ( ) => ( {
     email: '',
     isSubmit: false,
@@ -94,7 +96,7 @@ export default {
       const email = this.email;
       if ( await this.$validator.validateAll( { email } ) ) {
         try {
-          await this.$store.dispatch( 'auth/recoveryPassword', { email } );
+          await this.$store.dispatch( 'auth/repeatConfirmation', { email } );
           this.isSubmit = true;
         } catch ( error ) { };
       }
@@ -119,13 +121,11 @@ export default {
   i18n: {
     messages: {
       en: {
-        toolbarTitle: 'Reset password',
-        buttonSubmit: 'Send password',
-        submitMessage: 'Check your email for a link to reset your password.'
+        toolbarTitle: 'Create account',
+        submitMessage: 'A letter with a recovery link has been sent to the email address.'
       },
       ru: {
-        toolbarTitle: 'Восстановить пароль',
-        buttonSubmit: 'Выслать пароль',
+        toolbarTitle: 'Регистрация',
         submitMessage: 'Письмо с ссылкой восстановления отправлено на email.'
       }
     }

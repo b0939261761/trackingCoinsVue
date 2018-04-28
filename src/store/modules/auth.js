@@ -1,16 +1,10 @@
-import http from '@/http';
-import { setTokens, removeTokens } from '@/cookies';
+import http, { setBearer, getHeadersToken } from '@/http';
+import { setTokens } from '@/cookies';
 
 // Общий метод входа на сайт: SingIn, ConfrimRegistration, ConfirmPassword
-const enterSite = ( response ) => {
-  let status = response.data.status;
-  if ( status ) {
-    const { headers: { 'access-token': accessToken, 'refresh-token': refreshToken } } = response;
-    setTokens( accessToken, refreshToken );
-  } else {
-    removeTokens( );
-  };
-  return response.data.status;
+const enterSite = ( { response, commit } ) => {
+  setTokens( getHeadersToken( response.headers ) );
+  commit( 'user/setUserInfo', response.data.user, { root: true } );
 };
 
 const headersToken = ( token ) => ( { 'Authorization': `Bearer ${ token }` } );
@@ -18,50 +12,42 @@ const headersToken = ( token ) => ( { 'Authorization': `Bearer ${ token }` } );
 export default {
   namespaced: true,
   actions: {
-    async signIn( _, { email, password } ) {
-      return http.post( '/sing_in', { email, password } )
-        .then( response => enterSite( response ) );
+    async signIn( { commit }, { email, password } ) {
+      const response = await http.post( '/sign_in', { email, password }, { withoutToken: true } );
+      enterSite( { response, commit } );
     },
     async signUp( _, { username, email, password } ) {
-      return http.post( '/sing_up', { username, email, password } )
-        .then( response => response.data.status );
+      await http.post( '/sign_up', { username, email, password }, { withoutToken: true } );
     },
     async checkUser( _, email ) {
-      return http.post( '/check_user', { email } )
-        .then( response => response.data.status );
+      let check = false;
+      try {
+        const response = await http.post( '/check_user', { email }, { withoutToken: true } );
+        check = response.data.check;
+      } catch ( error ) { };
+      return check;
     },
-    async confirmRegistration( _, { token } ) {
-      const headers = headersToken( token );
-      return http.post( '/confirm_registration', null, { headers } )
-        .then( response => enterSite( response ) );
+    async confirmRegistration( { commit }, { token } ) {
+      const response = await http.post(
+        '/confirm_registration',
+        null,
+        { headers: setBearer( token ), withoutToken: true }
+      );
+      enterSite( { response, commit } );
     },
     async repeatConfirmation( _, { email } ) {
-      return http.post( '/repeat_confirmation', { email } )
-        .then( response => response.data.status );
+      await http.post( '/repeat_confirmation', { email }, { withoutToken: true } );
     },
     async recoveryPassword( _, { email } ) {
-      return http.post( '/recovery_password', { email } )
-        .then( response => response.data.status );
+      await http.post( '/recovery_password', { email }, { withoutToken: true } );
     },
     async confirmRecovery( _, { token } ) {
-      const headers = headersToken( token );
-      return http.post( '/confirm_recovery', null, { headers } )
-        .then( response => response.data.status );
+      await http.post( '/confirm_recovery', null, { headers: setBearer( token ) } );
     },
-    async changePassword( _, { password, token } ) {
+    async changePassword( { commit }, { password, token } ) {
       const headers = headersToken( token );
-      return http.post( '/change_password', { password }, { headers } )
-        .then( response => enterSite( response ) );
+      const response = await http.post( '/change_password', { password }, { headers, withoutToken: true } );
+      enterSite( { response, commit } );
     }
-    // async changePassword( { commit }, payload ) {
-    //   const { accessToken, refreshoken } = getTokens( );
-    //   const token = accessToken || refreshoken;
-    //   if ( token ) {
-    //     return http.post( '/change_password', payload )
-    //       .then( response => enterSite( response ) );
-    //   } else {
-    //     return new Promise( resolve => resolve( true ) );
-    //   }
-    // }
   }
 };

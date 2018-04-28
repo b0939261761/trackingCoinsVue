@@ -6,21 +6,20 @@ v-content
     fill-height
   )
     v-layout(
-      align-center,
+      align-center
       justify-center
     )
       v-flex(
-        xs12,
-        sm8,
+        xs12
+        sm8
         md6
       )
         v-card
           v-toolbar(
-            dark,
+            dark
             color='primary'
           )
-            v-toolbar-title
-              | {{ $t('toolbarTitle') }}
+            v-toolbar-title( v-text='$t("toolbarTitle")' )
 
             v-spacer
             v-btn(
@@ -28,66 +27,60 @@ v-content
               flat
               small
               color='white'
+              v-text='$t("buttonBack")'
             )
-              | {{ $t('buttonBack') }}
 
             ChooseLang
 
-          template( v-if='isSubmit' )
-            v-card-text
-              v-alert(
-                :type='isSend ? "success" : "error"'
-                :value='true'
-                transition='scale-transition'
-              )
-                | {{ isSend ? $t( 'sendSuccess' ) : $t( 'sendFail' ) }}
+          v-card-text
 
-            v-card-actions( v-if='isSend' )
-              v-spacer
-              v-btn(
-                  @click='onGoHome'
-                  color='primary'
+            v-text-field(
+              v-focus
+              data-focus
+              :label='$t("password")'
+              v-model='password'
+              ref='password'
+              @keyup.enter='$refs.passwordConfirm.focus( )'
+              :append-icon='passVisible ? "visibility" : "visibility_off"'
+              :append-icon-cb='( ) => passVisible = !passVisible'
+              :error-messages='errors.collect("password")'
+              :type='passVisible ? "text" : "password"'
+              name='password'
+              v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'
+              data-vv-name='password'
+            )
+
+            v-text-field(
+              :label='$t("passwordConfirm")'
+              v-model='passwordConfirm'
+              ref='passwordConfirm'
+              @keyup.enter='onSubmit'
+              :append-icon='passConfirmVisible ? "visibility" : "visibility_off"'
+              :append-icon-cb='( ) => passConfirmVisible = !passConfirmVisible'
+              :error-messages='errors.collect("passwordConfirm")'
+              :type='passConfirmVisible ? "text" : "password"'
+              v-validate='{ confirmed: "password" }'
+              data-vv-name='passwordConfirm'
+            )
+
+          v-card-actions
+            v-container
+              v-layout
+
+                v-spacer
+
+                v-flex(
+                  xs12
+                  sm7
+                  md5
                 )
-                  | {{ $t('buttonGoHome') }}
-
-          template( v-else )
-            v-card-text
-
-              v-text-field(
-                :label='$t("password")'
-                v-model='password'
-                ref='password'
-                @keyup.enter='$refs.passwordConfirm.focus( )'
-                :append-icon='passVisible ? "visibility" : "visibility_off"'
-                :append-icon-cb='( ) => passVisible = !passVisible'
-                :error-messages='errors.collect("password")'
-                :type='passVisible ? "text" : "password"'
-                name='password'
-                v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'
-                data-vv-name='password'
-              )
-
-              v-text-field(
-                :label='$t("passwordConfirm")'
-                v-model='passwordConfirm'
-                ref='passwordConfirm'
-                @keyup.enter='onSubmit'
-                :append-icon='passConfirmVisible ? "visibility" : "visibility_off"'
-                :append-icon-cb='( ) => passConfirmVisible = !passConfirmVisible'
-                :error-messages='errors.collect("passwordConfirm")'
-                :type='passConfirmVisible ? "text" : "password"'
-                v-validate='{ confirmed: "password" }'
-                data-vv-name='passwordConfirm'
-              )
-
-            v-card-actions
-              v-spacer
-              v-btn(
-                  @click='onSubmit'
-                  color='primary'
-                  :disabled='isDisabled'
-                )
-                  | {{ $t('buttonSubmit') }}
+                  v-btn(
+                    @click='onSubmit'
+                    color='primary'
+                    :disabled='isDisabled'
+                    block
+                    v-text='$t("send")'
+                  )
 </template>
 
 <script>
@@ -101,55 +94,41 @@ export default {
     passwordConfirm: '',
     passVisible: false,
     passConfirmVisible: false,
-    isSubmit: false,
-    isSend: false
+    isSubmitProcess: false
   } ),
   computed: {
     isDisabled( ) {
-      return !this.password || !this.passwordConfirm || !this.token || this.errors.any( );
+      return this.isSubmitProcess || !this.password || !this.passwordConfirm ||
+        !this.token || this.errors.any( );
     }
   },
   methods: {
-    onSubmit( ) {
-      this.$validator.validateAll( ).then( result => {
-        if ( result ) {
-          const payload = { password: this.password, token: this.token };
-          this.$store.dispatch( 'auth/changePassword', payload )
-            .then( status => {
-              this.isSubmit = true;
-              this.isSend = status;
-              if ( status ) {
-                this.timer = setTimeout( ( ) => this.onGoHome( ), 5000 );
-              }
-            } );
-        }
-      } );
+    async onSubmit( ) {
+      this.isSubmitProcess = true;
+
+      if ( await this.$validator.validateAll( ) ) {
+        const payload = { password: this.password, token: this.token };
+        try {
+          await this.$store.dispatch( 'auth/changePassword', payload );
+          this.$router.push( { name: 'home' } );
+        } catch ( error ) { };
+      }
+
+      this.isSubmitProcess = false;
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
-    },
-    onGoHome( ) {
-      this.$router.push( { name: 'home' } );
     }
-  },
-  beforeDestroy( ) {
-    clearTimeout( this.timer );
   },
   i18n: {
     messages: {
       en: {
-        toolbarTitle: 'New password',
-        buttonSubmit: 'Save',
-        sendSuccess: 'The password has been changed.',
-        sendFail: 'The operation failed, please try again later.'
+        toolbarTitle: 'New password'
       },
       ru: {
-        toolbarTitle: 'Новый пароль',
-        buttonSubmit: 'Сохранить',
-        sendSuccess: 'Пароль был изменен.',
-        sendFail: 'Операция завершилась неудачно, попробуйте позже.'
+        toolbarTitle: 'Новый пароль'
       }
     }
   }
-}
+};
 </script>

@@ -1,20 +1,24 @@
 <template lang='pug'>
-  v-app(
-    id='app'
-    :dark='false'
-  )
-    transition( name='fade' )
-      router-view
+v-app(
+  id='app'
+  :dark='false'
+)
 
-    Preloader
+  transition( name='fade' )
+    router-view
+
+  Preloader
+  Error
 </template>
 
 <script>
 import Preloader from '@/components/Preloader';
+import Error from '@/components/Error';
 
 export default {
   components: {
-    Preloader
+    Preloader,
+    Error
   }
 };
 </script>
@@ -22,6 +26,15 @@ export default {
 <style>
 body {
   font-family: Roboto, sans-serif;
+}
+
+.height-100 {
+  height: 100%;
+  color:peru
+}
+
+.p-relative {
+  position: relative;
 }
 
 .alert {

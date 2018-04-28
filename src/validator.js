@@ -7,22 +7,18 @@ import ru from 'vee-validate/dist/locale/ru';
 import i18nEn from '@/lang/en';
 import i18nRu from '@/lang/ru';
 
-Validator.extend( 'uncheck_email', value =>
-  new Promise( ( resolve ) =>
-    store.dispatch( 'auth/checkUser', value )
-      .then( status => resolve( { valid: status } ) )
-  )
-);
+Validator.extend( 'uncheck_email', async ( value ) => {
+  const check = await store.dispatch( 'auth/checkUser', value );
+  return { valid: check };
+} );
 
-Validator.extend( 'check_email', value =>
-  new Promise( ( resolve ) =>
-    store.dispatch( 'auth/checkUser', value )
-      .then( status => resolve( { valid: !status } ) )
-  )
-);
+Validator.extend( 'check_email', async ( value ) => {
+  const check = await store.dispatch( 'auth/checkUser', value );
+  return { valid: !check };
+} );
 
 const getAttributes = ( { email, password, passwordConfirm, username } ) =>
-  ( { email, password, passwordConfirm, username } )
+  ( { email, password, passwordConfirm, username } );
 
 const dictionary = {
   en: {

@@ -4,9 +4,9 @@ v-menu(
   left
   offset-y
 )
-  v-avatar(
-    tile
-    slot="activator"
+  v-btn(
+    icon
+    slot='activator'
   )
     img( :src='langImage' )
 

@@ -19,6 +19,12 @@ Vue.config.productionTip = false;
 
 Vue.component( 'ChooseLang', ChooseLang );
 
+Vue.directive( 'focus', {
+  inserted( el ) {
+    el.querySelector( '[data-focus]' ).focus( );
+  }
+} );
+
 new Vue( {
   router,
   store,

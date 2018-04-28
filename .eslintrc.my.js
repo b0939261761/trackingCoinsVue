@@ -33,12 +33,18 @@ module.exports = {
       {
         before: true,
         after: true,
-        overrides: { catch: { after: false } }
+        overrides: { catch: { after: true } }
       }
     ],
 
     // disallow unnecessary parentheses (no-extra-parens)
-    'no-extra-parens': [ 'error', 'all', { nestedBinaryExpressions: false } ],
+    'no-extra-parens': [ 'error',
+      'all',
+      {
+        nestedBinaryExpressions: false,
+        returnAssign: false
+      }
+    ],
 
     // enforce consistent spacing inside braces (object-curly-spacing)
    'object-curly-spacing': [ 'error', 'always' ]
