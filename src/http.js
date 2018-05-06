@@ -1,8 +1,9 @@
 import axios from 'axios';
 import store from '@/store/';
-import { urlApi as baseURL } from '@/variables';
 import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '@/cookies';
 import router from '@/router';
+
+const baseURL = process.env.NODE_ENV === 'production' ? 'https://realitycoins.cf:8090' : 'http://192.168.5.141:8090';
 
 const http = axios.create( {
   baseURL

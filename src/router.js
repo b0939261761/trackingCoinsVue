@@ -115,14 +115,11 @@ const router = new Router( {
       meta: { type: 'auth' }
     },
     {
-      path: '/error',
-      name: 'error',
-      component: ( ) => import( '@/views/E404' ),
-      meta: { type: 'error' }
-    },
-    {
       path: '*',
-      redirect: { name: 'error' }
+      beforeEnter: ( to, from, next ) => {
+        store.commit( 'setError', { code: 404, message: 'Not Found' } );
+        next( { name: 'home' } );
+      }
     }
   ]
 } );
@@ -140,7 +137,7 @@ router.beforeEach( ( to, from, next ) => {
 
     default:
       if ( !getRefreshToken( ) ) {
-        store.commit( 'setError', { code: 1000, message: 'Token' } );
+        // store.commit( 'setError', { code: 1000, message: 'Token' } );
         next( { name: 'signIn' } );
       } else {
         next( );

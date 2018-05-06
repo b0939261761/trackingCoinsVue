@@ -42,7 +42,7 @@ export default {
       await http.post( '/recovery_password', { email }, { withoutToken: true } );
     },
     async confirmRecovery( _, { token } ) {
-      await http.post( '/confirm_recovery', null, { headers: setBearer( token ) } );
+      await http.post( '/confirm_recovery', null, { headers: setBearer( token ), withoutToken: true } );
     },
     async changePassword( { commit }, { password, token } ) {
       const headers = headersToken( token );

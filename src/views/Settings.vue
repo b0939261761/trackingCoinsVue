@@ -1,26 +1,35 @@
 <template lang='pug'>
 v-card( height='100%' )
   v-card-text
-    v-layout( row )
-      v-flex( xs5 )
-        span( v-text='$t("notificationLanguage")' )
-        v-radio-group(
-          v-model='lang'
-          :row='$vuetify.breakpoint.smAndUp'
+    v-container( grid-list-lg )
+      v-layout
+        v-flex(
+          xs12
+          sm5
+          md3
         )
-          v-radio(
-            v-for='(item, index) in languages'
-            :key='index'
-            primary
-            :label='item.title'
-            :value='item.lang'
+          v-btn(
+            block
+            @click=''
+            v-text='$t("removeUser")'
           )
 
-    v-container( grid-list-lg )
-      v-layout(
-        row
-        wrap
-      )
+      v-layout
+        v-flex( xs5 )
+          span( v-text='$t("notificationLanguage")' )
+          v-radio-group(
+            v-model='lang'
+            :row='$vuetify.breakpoint.smAndUp'
+          )
+            v-radio(
+              v-for='(item, index) in languages'
+              :key='index'
+              primary
+              :label='item.title'
+              :value='item.lang'
+            )
+
+      v-layout( wrap )
         v-flex(
           xs12
           md6
@@ -219,11 +228,13 @@ export default {
     messages: {
       en: {
         confirmedSuccess: 'Success.',
-        confirmedFail: 'The operation failed, please try again later.'
+        confirmedFail: 'The operation failed, please try again later.',
+        removeUser: 'Remove Accaunt'
       },
       ru: {
         confirmedSuccess: 'Сохранено.',
-        confirmedFail: 'Ошибка, попробуйте сохранить повторно.'
+        confirmedFail: 'Ошибка, попробуйте сохранить повторно.',
+        removeUser: 'Удалить профиль'
       }
     }
   }
