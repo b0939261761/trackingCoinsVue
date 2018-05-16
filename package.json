@@ -31,6 +31,7 @@
     "babel-core": "^7.0.0-0",
     "babel-jest": "^22.0.4",
     "flush-promises": "^1.0.0",
+    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
   },

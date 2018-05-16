@@ -17,8 +17,8 @@ Validator.extend( 'check_email', async ( value ) => {
   return { valid: !check };
 } );
 
-const getAttributes = ( { email, password, passwordConfirm, username } ) =>
-  ( { email, password, passwordConfirm, username } );
+const getAttributes = ( { email, password, passwordConfirm, username, telegramUsername } ) =>
+  ( { email, password, passwordConfirm, username, telegramUsername } );
 
 const dictionary = {
   en: {

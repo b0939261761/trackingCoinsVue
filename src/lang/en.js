@@ -11,11 +11,12 @@ export default {
   save: 'Save',
   notifications: 'Notifications',
   exchange: 'Exchange',
+  exchanges: 'Exchanges',
   pair: 'Currency pair',
-  price: 'Price',
+  targetPrice: 'Target price',
   direction: 'Direction',
-  less: 'Less',
-  above: 'Above',
+  less: 'Low',
+  above: 'High',
   activated: 'Activated',
   rowsPerPage: 'Rows per page',
   rows: 'Rows',
@@ -26,5 +27,10 @@ export default {
   off: 'Off',
   newNotification: 'New notification',
   editNotification: 'Edit notification',
-  send: 'Send'
+  send: 'Send',
+  emailEnabled: 'Email enabled',
+  telegramUsername: 'Telegram username',
+  telegramFullName: 'Telegram fullname',
+  telegramEnabled: 'Telegram enabled',
+  pairs: 'Currency pairs'
 };

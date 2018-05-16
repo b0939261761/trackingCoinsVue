@@ -1,6 +1,7 @@
 <template lang='pug'>
 v-dialog(
-  :value='dialog'
+  :value='show'
+  @input='$emit( "update:show", $event )'
   max-width='600px'
 )
   v-card
@@ -41,7 +42,7 @@ v-dialog(
               item-text='symbol'
               item-value='id'
               :loading='loadingPair'
-              :disabled='loadingPair'
+              :disabled='loadingPair || !exchangeId'
               autocomplete
               v-validate='{ required: true }'
               data-vv-name='pair'
@@ -78,7 +79,7 @@ v-dialog(
             sm6
           )
             v-text-field(
-              :label='$t("price")'
+              :label='$t("targetPrice")'
               :value='price'
               @input='$emit( "update:price", $event )'
               :error-messages='errors.collect("price")'
@@ -118,7 +119,7 @@ import { createNamespacedHelpers } from 'vuex';
 const { mapGetters, mapActions } = createNamespacedHelpers( 'notifications' );
 
 export default {
-  name: 'icationEdit',
+  name: 'NoticationEdit',
   props: {
     show: Boolean,
     id: Number,
@@ -129,7 +130,6 @@ export default {
     activated: Boolean
   },
   data: () => ( {
-    dialog: false,
     loadingPair: false,
     directionIcon: null,
     directionColor: null,
@@ -152,9 +152,8 @@ export default {
   watch: {
     show: {
       immediate: true,
-      async handler( val ) {
-        if ( val ) await this.getExchanges( );
-        this.dialog = val;
+      handler( val ) {
+        this.getExchanges( );
       }
     },
     exchangeId: {

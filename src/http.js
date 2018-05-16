@@ -4,6 +4,7 @@ import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '@/cook
 import router from '@/router';
 
 const baseURL = process.env.NODE_ENV === 'production' ? 'https://realitycoins.cf:8090' : 'http://192.168.5.141:8090';
+// const baseURL = 'https://realitycoins.cf:8090';
 
 const http = axios.create( {
   baseURL

@@ -11,8 +11,9 @@ export default {
   save: 'Сохранить',
   notifications: 'Уведомления',
   exchange: 'Биржа',
+  exchanges: 'Биржи',
   pair: 'Валютная пара',
-  price: 'Цена',
+  targetPrice: 'Целевая цена',
   direction: 'Направление',
   less: 'Меньше',
   above: 'Больше',
@@ -26,5 +27,10 @@ export default {
   off: 'Выключено',
   newNotification: 'Новое уведомление',
   editNotification: 'Редактирование уведомления',
-  send: 'Выслать'
+  send: 'Выслать',
+  emailEnabled: 'Email enabled',
+  telegramUsername: 'Telegram username',
+  telegramFullName: 'Telegram fullname',
+  telegramEnabled: 'Telegram enabled',
+  pairs: 'Валютные пары'
 };

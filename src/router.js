@@ -6,19 +6,20 @@ import store from '@/store/';
 Vue.use( Router );
 
 const settingsBeforeEnter = async ( to, from, next ) => {
-  await store.dispatch( 'user/userInfo' )
-    .then( status => {
-      if ( !status ) {
-        removeTokens( );
-        router.push( { name: 'signIn' } );
-        return false;
-      }
-    } );
+  await store.dispatch( 'user/userInfo' );
   next( );
 };
 
 const notificationsBeforeEnter = async ( to, from, next ) => {
   await store.dispatch( 'notifications/getNotifications' );
+  next( );
+};
+
+const pairsBeforeEnter = async ( to, from, next ) => {
+  next( );
+};
+
+const exchangesBeforeEnter = async ( to, from, next ) => {
   next( );
 };
 
@@ -68,6 +69,18 @@ const router = new Router( {
           name: 'notifications',
           component: ( ) => import( '@/views/Notifications' ),
           beforeEnter: notificationsBeforeEnter
+        },
+        {
+          path: 'pairs',
+          name: 'pairs',
+          component: ( ) => import( '@/views/Pairs' ),
+          beforeEnter: pairsBeforeEnter
+        },
+        {
+          path: 'exchanges',
+          name: 'exchanges',
+          component: ( ) => import( '@/views/Exchanges' ),
+          beforeEnter: exchangesBeforeEnter
         }
       ]
     },

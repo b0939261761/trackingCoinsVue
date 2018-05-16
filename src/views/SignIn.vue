@@ -38,11 +38,12 @@ v-content
                 v-focus
                 data-focus
                 :label='$t("email")'
-                id='email'
                 v-model='email'
+                ref='email'
                 @keyup.enter='$refs.password.focus( )'
                 :error-messages='errors.collect("email")'
                 v-validate='{ required: true, email: true }'
+                data-vv-name='email'
               )
 
               v-text-field(
@@ -103,15 +104,15 @@ export default {
   methods: {
     async onSubmit( ) {
       this.isSubmitProcess = true;
-
       if ( await this.$validator.validateAll( ) ) {
         const { email, password } = this;
         try {
           await this.$store.dispatch( 'auth/signIn', { email, password } );
           this.$router.push( { name: 'home' } );
         } catch ( error ) {
-          this.email = '';
-          this.password = '';
+          this.email = null;
+          this.password = null;
+          setTimeout( () => this.errors.clear( ), 0 );
         }
       }
 

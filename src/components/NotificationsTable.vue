@@ -133,7 +133,7 @@ export default {
           sortable: this.isNotificationsAny
         },
         {
-          text: this.$t( 'price' ),
+          text: this.$t( 'targetPrice' ),
           value: 'price',
           sortable: this.isNotificationsAny
         },

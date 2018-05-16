@@ -85,8 +85,8 @@ export default {
   computed: {
     drawerList( ) {
       return [
-        { icon: 'monetization_on', text: 'Валютные пары', pathName: 'settings' },
-        { icon: 'shopping_cart', text: 'Биржи', pathName: 'settings' },
+        { icon: 'monetization_on', text: this.$t( 'pairs' ), pathName: 'pairs' },
+        { icon: 'shopping_cart', text: this.$t( 'exchanges' ), pathName: 'exchanges' },
         { icon: 'notifications', text: this.$t( 'notifications' ), pathName: 'notifications' },
         { icon: 'settings', text: this.$t( 'settings' ), pathName: 'settings' },
         { divider: true },
