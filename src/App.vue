@@ -60,4 +60,7 @@ body {
   opacity: 1 !important;
 }
 
+img {
+  height: 100%;
+}
 </style>

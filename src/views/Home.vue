@@ -47,7 +47,11 @@ v-card( height='100%' )
       @click.stop='drawer = !drawer'
     )
 
-    v-toolbar-title( class='hidden-xs-only' ) Cryptonot
+    img(
+      class='logo'
+      src='cryptonot_178x100.png'
+    )
+
     v-spacer
 
     ChooseLang

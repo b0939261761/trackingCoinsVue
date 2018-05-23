@@ -18,7 +18,11 @@ v-content
             dark
             color='primary'
           )
-            v-toolbar-title( v-text='"Cryptonot"' )
+
+            img(
+              class='logo'
+              src='cryptonot_178x100.png'
+            )
 
             v-spacer
             v-btn(
