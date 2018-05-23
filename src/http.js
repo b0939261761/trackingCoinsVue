@@ -3,8 +3,7 @@ import store from '@/store/';
 import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '@/cookies';
 import router from '@/router';
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'https://realitycoins.cf:8090' : 'http://192.168.5.141:8090';
-// const baseURL = 'https://realitycoins.cf:8090';
+const baseURL = process.env.NODE_ENV === 'production' ? 'https://Cryptonot.io:8090' : 'http://192.168.5.141:8090';
 
 const http = axios.create( {
   baseURL

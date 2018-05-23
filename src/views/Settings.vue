@@ -229,7 +229,7 @@ v-card( height='100%' )
 import { createNamespacedHelpers } from 'vuex';
 const { mapState, mapActions } = createNamespacedHelpers( 'user' );
 
-const telegramBotLink = `https://t.me/${ process.env.NODE_ENV === 'production' ? 'RealityCoinsBot' : 'RealityCoinsTestBot' }`;
+const telegramBotLink = `https://t.me/${ process.env.NODE_ENV === 'production' ? 'CryptonotBot' : 'CryptonotTestBot' }`;
 
 export default {
   data: ( ) => ( {
@@ -305,7 +305,7 @@ export default {
         if ( this.isTelegramEnabledChange ) data.telegram_enabled = this.telegramEnabled;
         if ( this.isTelegramUsernameChange ) {
           data.telegram_username = this.telegramUsername;
-          data.telegram_activated = this.telegram_activated;
+          data.telegram_activated = false;
         }
 
         try {

@@ -18,7 +18,7 @@ v-content
             dark
             color='primary'
           )
-            v-toolbar-title( v-text='"Reality Coins"' )
+            v-toolbar-title( v-text='"Cryptonot"' )
 
             v-spacer
             v-btn(

@@ -26,6 +26,8 @@ v-card( height='100%' )
           :to='{ name: item.pathName }'
           :key='index'
           class='grey--text'
+          :disabled='item.disabled'
+
         )
           v-list-tile-action
             v-icon(
@@ -45,7 +47,7 @@ v-card( height='100%' )
       @click.stop='drawer = !drawer'
     )
 
-    v-toolbar-title( class='hidden-xs-only' ) Reality Coins
+    v-toolbar-title( class='hidden-xs-only' ) Cryptonot
     v-spacer
 
     ChooseLang
@@ -85,12 +87,12 @@ export default {
   computed: {
     drawerList( ) {
       return [
-        { icon: 'monetization_on', text: this.$t( 'pairs' ), pathName: 'pairs' },
-        { icon: 'shopping_cart', text: this.$t( 'exchanges' ), pathName: 'exchanges' },
+        { icon: 'monetization_on', text: this.$t( 'pairs' ), pathName: 'pairs', disabled: true },
+        { icon: 'shopping_cart', text: this.$t( 'exchanges' ), pathName: 'exchanges', disabled: true },
         { icon: 'notifications', text: this.$t( 'notifications' ), pathName: 'notifications' },
         { icon: 'settings', text: this.$t( 'settings' ), pathName: 'settings' },
         { divider: true },
-        { icon: 'help', text: 'Помощь', pathName: 'settings' },
+        { icon: 'help', text: 'Помощь', pathName: 'settings', disabled: true },
         { divider: true },
         { icon: 'exit_to_app', text: 'Выход', pathName: 'signIn' }
       ];
