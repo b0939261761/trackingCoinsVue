@@ -83,7 +83,7 @@ v-dialog(
               :value='price'
               @input='$emit( "update:price", $event )'
               :error-messages='errors.collect("price")'
-              v-validate='{ required: true, decimal: 8, max: 18 }'
+              v-validate='{ required: true, decimal: 10, max: 20 }'
               data-vv-name='price'
             )
           v-flex(
