@@ -13,7 +13,7 @@ v-data-table(
     slot='items'
     slot-scope='{ item }'
   )
-    td( v-text='item.exchangeName' )
+    td( v-text='item.exchangeNames.join(", ")' )
     td(
       class='text-xs-center'
       v-text='item.symbol'

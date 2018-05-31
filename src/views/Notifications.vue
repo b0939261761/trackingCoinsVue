@@ -60,9 +60,9 @@ export default {
     onShowAdd( ) {
       this.dialogEdit = true;
       this.editedItem = {
-        id: 0,
-        exchangeId: null,
-        pairId: null,
+        ids: [ ],
+        exchangeIds: [ ],
+        symbol: null,
         direction: 'above',
         price: 0,
         activated: true
@@ -71,9 +71,9 @@ export default {
     async onEdit( ) {
       await this.editNotification(
         {
-          id: this.editedItem.id,
-          exchange_id: this.editedItem.exchangeId,
-          pair_id: this.editedItem.pairId,
+          ids: this.editedItem.ids,
+          exchange_ids: this.editedItem.exchangeIds,
+          symbol: this.editedItem.symbol,
           direction: this.editedItem.direction,
           price: this.editedItem.price,
           activated: this.editedItem.activated
@@ -82,7 +82,7 @@ export default {
       this.dialogEdit = false;
     },
     async onRemove( ) {
-      await this.removeNotification( this.removeItem.id );
+      await this.removeNotification( this.removeItem.ids );
       this.dialogRemove = false;
     }
   },

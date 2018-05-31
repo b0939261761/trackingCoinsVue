@@ -35,7 +35,7 @@ export default {
     isExchangesAny: ( _, getters ) => Boolean( getters.getExchanges.length ),
     getDirection: state => id => state.directions.find( el => el.id === id ),
     getActivated: state => id => state.activatedes.find( el => el.id === id ),
-    getPair: state => id => state.pairs.find( el => el.id === id )
+    getExchange: state => ids => state.exchanges.filter( el => ids.includes( el.id ) )
   },
   mutations: {
     setNotifications: ( state, notifications ) =>
@@ -53,25 +53,25 @@ export default {
         commit( 'setNotifications', response.data.notifications );
       } catch ( error ) { };
     },
-    async getExchanges( { getters, commit } ) {
-      if ( !getters.isExchangesAny ) {
+    async getPairs( { getters, commit } ) {
+      if ( !getters.isPairsAny ) {
         try {
-          const response = await http.post( '/get_exchanges' );
-          commit( 'setExchanges', response.data.exchanges );
-        } catch ( error ) { };
-      }
-    },
-    async getPairs( { commit }, exchangeId ) {
-      if ( exchangeId ) {
-        try {
-          const response = await http.post( '/get_pairs', { exchange_id: exchangeId } );
+          const response = await http.post( '/get_pairs' );
           commit( 'setPairs', response.data.pairs );
         } catch ( error ) { };
       }
     },
-    async removeNotification( { commit }, id ) {
+    async getExchanges( { getters, commit }, { symbol } ) {
+      if ( symbol ) {
+        try {
+          const response = await http.post( '/get_exchanges', { symbol } );
+          commit( 'setExchanges', response.data.exchanges );
+        } catch ( error ) { };
+      }
+    },
+    async removeNotification( { commit }, ids ) {
       try {
-        const response = await http.post( '/remove_notification', { id } );
+        const response = await http.post( '/remove_notification', { ids } );
         commit( 'setNotifications', response.data.notifications );
       } catch ( error ) { };
     },

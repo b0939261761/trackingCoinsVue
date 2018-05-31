@@ -18,9 +18,24 @@ v-dialog(
             sm6
           )
             v-select(
-              :items='exchanges'
-              :value='exchangeId'
-              @input='$emit( "update:exchangeId", $event )'
+              :items='pairs'
+              :value='symbol'
+              @input='$emit( "update:symbol", $event )'
+              :label='$t("pair")'
+              autocomplete
+              v-validate='{ required: true }'
+              data-vv-name='pair'
+              :error-messages='errors.collect("pair")'
+              :no-data-text='$t("noData")'
+            )
+
+          v-flex(
+            xs12
+            sm6
+          )
+            v-select(
+              :items='exchangesAll'
+              :value='exchangeIds'
               :label='$t("exchange")'
               item-text='name'
               item-value='id'
@@ -28,27 +43,35 @@ v-dialog(
               v-validate='{ required: true }'
               data-vv-name='exchange'
               :error-messages='errors.collect("exchange")'
-              ref='exchanges'
+              :disabled='loadingExchanges || !symbol'
+              :loading='loadingExchanges'
+              chips
+              deletable-chips
+              multiple
+              @input='onChangeExchangeAll'
             )
-          v-flex(
-            xs12
-            sm6
-          )
-            v-select(
-              :items='pairs'
-              :value='pairId'
-              @input='$emit( "update:pairId", $event )'
-              :label='$t("pair")'
-              item-text='symbol'
-              item-value='id'
-              :loading='loadingPair'
-              :disabled='loadingPair || !exchangeId'
-              autocomplete
-              v-validate='{ required: true }'
-              data-vv-name='pair'
-              :error-messages='errors.collect("pair")'
-              :no-data-text='$t("noData")'
-            )
+              template(
+                slot='item'
+                slot-scope='data'
+              )
+                template( v-if='data.item.id' )
+                  v-list-tile-content
+                    v-list-tile-title
+                      v-checkbox(
+                        :label='data.item.name'
+                        :input-value='exchangeIds'
+                        :value='data.item.id'
+                      )
+                    v-list-tile-sub-title( v-html="" )
+                template( v-else )
+                  v-list-tile-content
+                    v-list-tile-title
+                      v-checkbox(
+                        :label='$t("exchangeAll")'
+                        v-model='exchangeAllSelected'
+                        color="indigo darken-3"
+                      )
+
           v-flex( xs12 )
             v-radio-group(
               :input-value='direction'
@@ -101,7 +124,7 @@ v-dialog(
       v-btn(
         color='primary'
         flat
-        :disabled='loadingPair'
+        :disabled='loadingExchanges'
         @click='onSubmit'
         v-text='$t("save")'
       )
@@ -111,7 +134,6 @@ v-dialog(
         @click='$emit( "update:show", false )'
         v-text='$t("cancel")'
       )
-
 </template>
 
 <script>
@@ -122,19 +144,21 @@ export default {
   name: 'NoticationEdit',
   props: {
     show: Boolean,
-    id: Number,
-    exchangeId: Number,
-    pairId: Number,
+    ids: Array,
+    exchangeIds: Array,
+    symbol: String,
     direction: String,
     price: [ Number, String ],
     activated: Boolean
   },
   data: () => ( {
-    loadingPair: false,
+    loadingExchanges: false,
     directionIcon: null,
     directionColor: null,
     activatedName: null,
-    activatedIcon: null
+    activatedIcon: null,
+    exchangesAll: [ ],
+    exchangeAllSelected: false
   } ),
   computed: {
     ...mapGetters( {
@@ -143,7 +167,7 @@ export default {
       directions: 'getDirections',
       getDirection: 'getDirection',
       getActivated: 'getActivated',
-      getPair: 'getPair'
+      getExchange: 'getExchange'
     } ),
     formTitle( ) {
       return this.id ? this.$t( 'titleNew' ) : this.$t( 'titleEdit' );
@@ -153,19 +177,25 @@ export default {
     show: {
       immediate: true,
       handler( val ) {
-        this.getExchanges( );
+        if ( val ) this.getPairs( );
       }
     },
-    exchangeId: {
+    symbol: {
       immediate: true,
-      async handler( val ) {
-        this.loadingPair = true;
-        if ( val ) await this.getPairs( val );
+      async handler( symbol ) {
+        let exchangeIds = [ ];
 
-        if ( !this.getPair( this.pairId ) ) {
-          this.$emit( 'update:pairId', null );
+        if ( symbol ) {
+          this.loadingExchanges = true;
+
+          await this.getExchanges( { symbol } );
+          exchangeIds = this.getExchange( this.exchangeIds );
+          this.exchangesAll = [ { id: 0, name: '' }, { divider: true }, ...this.exchanges ];
+
+          this.loadingExchanges = false;
         };
-        this.loadingPair = false;
+
+        this.$emit( 'update:exchangeIds', exchangeIds );
       }
     },
     direction: {
@@ -191,6 +221,22 @@ export default {
       getExchanges: 'getExchanges',
       getPairs: 'getPairs'
     } ),
+    onChangeExchangeAll( event ) {
+      const exchangeId = event[ event.length - 1 ];
+      let exchangeIds = [ ];
+
+      this.$nextTick( ( ) => {
+        if ( exchangeId !== 0 ) {
+          exchangeIds = event;
+        } else {
+          if ( this.exchangeAllSelected ) {
+            exchangeIds = this.exchanges.map( el => el.id );
+          };
+        };
+        console.log( exchangeIds )
+        this.$emit( 'update:exchangeIds', exchangeIds );
+      } );
+    },
     async onSubmit( ) {
       const result = await this.$validator.validateAll( );
       if ( result ) {
@@ -202,11 +248,13 @@ export default {
     messages: {
       en: {
         titleNew: 'New notification',
-        titleEdit: 'Edit notification'
+        titleEdit: 'Edit notification',
+        exchangeAll: 'All exchanges'
       },
       ru: {
         titleNew: 'Новое уведомление',
-        titleEdit: 'Редактирование уведомления'
+        titleEdit: 'Редактирование уведомления',
+        exchangeAll: 'Все биржи'
       }
     }
   }
