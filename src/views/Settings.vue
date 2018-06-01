@@ -34,9 +34,16 @@ v-card( height='100%' )
           v-card-actions
             v-spacer
             v-btn(
+              color='red darken-1'
+              flat
+              @click='onClickSaveAndGoBot'
+              v-text='$t("saveAndGo")'
+            )
+
+            v-btn(
               flat
               @click='showSaveSettings = false'
-              v-text='"OK"'
+              v-text='$t("cancel")'
             )
 
       v-layout
@@ -314,12 +321,20 @@ export default {
         } catch ( error ) { }
       }
     },
+    onGoTelegramBot( ) {
+      window.open( this.telegramBotLink );
+    },
     onClickTelegramActivated( ) {
       if ( this.isTelegramUsernameChange ) {
         this.showSaveSettings = true;
       } else {
-        window.open( this.telegramBotLink );
+        this.onGoTelegramBot( );
       }
+    },
+    async onClickSaveAndGoBot( ) {
+      this.showSaveSettings = false;
+      await this.onSubmit( );
+      this.onGoTelegramBot( );
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
@@ -369,14 +384,14 @@ export default {
         userRemove: 'Remove Accaunt',
         telegramActivated: 'Activated Telegram',
         messageRemove: 'Are you sure you want to delete this account?',
-        messageSaveSettings: 'Save settings'
+        messageSaveSettings: 'Save settings for telegram bot'
       },
       ru: {
         submitMessage: 'Сохранено.',
         userRemove: 'Удалить профиль',
         telegramActivated: 'Активировать Telegram',
         messageRemove: 'Вы уверенны в удалении пользователя?',
-        messageSaveSettings: 'Сохраните настроки'
+        messageSaveSettings: 'Сохраните настроки для активации бота в Telegram'
       }
     }
   }

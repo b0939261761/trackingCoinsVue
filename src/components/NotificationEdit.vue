@@ -233,7 +233,6 @@ export default {
             exchangeIds = this.exchanges.map( el => el.id );
           };
         };
-        console.log( exchangeIds )
         this.$emit( 'update:exchangeIds', exchangeIds );
       } );
     },
