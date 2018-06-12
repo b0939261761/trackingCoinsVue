@@ -25,12 +25,12 @@ v-card( height='100%' )
             )
 
       v-dialog(
-        v-model='showSaveSettings'
+        v-model='showSaveSettingsForTelegram'
         persistent
         max-width='310'
       )
         v-card
-          v-card-text( v-text='$t("messageSaveSettings")' )
+          v-card-text( v-text='$t("messageSaveSettingsForTelegram")' )
           v-card-actions
             v-spacer
             v-btn(
@@ -42,8 +42,33 @@ v-card( height='100%' )
 
             v-btn(
               flat
-              @click='showSaveSettings = false'
+              @click='showSaveSettingsForTelegram = false'
               v-text='$t("cancel")'
+            )
+
+      v-dialog(
+        v-model='showSaveSettingsForEmail'
+        persistent
+        max-width='320'
+      )
+        v-card
+          v-card-text(
+            v-text='$t(isEmailSubmit ? "emailSubmitMessage" : "messageSaveSettingsForEmail")'
+          )
+          v-card-actions
+            v-spacer
+            v-btn(
+              v-if='!isEmailSubmit'
+              color='red darken-1'
+              flat
+              @click='onClicksaveAndConfirmEmail'
+              v-text='$t("saveAndConfirm")'
+            )
+
+            v-btn(
+              flat
+              @click='showSaveSettingsForEmail = false'
+              v-text='isEmailSubmit ? "OK" : $t("cancel")'
             )
 
       v-layout
@@ -89,6 +114,7 @@ v-card( height='100%' )
             data-vv-name='username'
           )
 
+      v-layout( wrap )
         v-flex(
           xs12
           md6
@@ -101,6 +127,24 @@ v-card( height='100%' )
             :error-messages='errors.collect("email")'
             @input='onInputEmail'
             :loading='loadingEmail'
+          )
+
+        v-flex(
+          xs12
+          md6
+        )
+          v-switch(
+            v-if='emailActivated && !isEmailChange'
+            :label='$t("emailEnabled")'
+            v-model='emailEnabled'
+          )
+          v-btn(
+            v-else
+            color='primary'
+            v-text='$t("emailActivated")'
+            @click='onClickEmailActivated'
+            block
+            :disabled='loadingEmail || !email || Boolean(errors.first("email"))'
           )
 
         v-flex(
@@ -149,8 +193,8 @@ v-card( height='100%' )
             ref='telegramUsername'
             @keyup.enter='onSubmit'
             :error-messages='errors.collect("telegramUsername")'
-            v-validate='{ max: 32, regex: /^\\w+$/ }'
-            data-vv-name='telegramUsername'
+            @input='onInputTelegramUsername'
+            :loading='loadingTelegramUsername'
           )
 
         v-flex(
@@ -169,15 +213,7 @@ v-card( height='100%' )
             v-text='$t("telegramActivated")'
             @click='onClickTelegramActivated'
             block
-          )
-
-        v-flex(
-          xs12
-          md6
-        )
-          v-switch(
-            :label='$t("emailEnabled")'
-            v-model='emailEnabled'
+            :disabled='loadingTelegramUsername || !telegramUsername || Boolean(errors.first("telegramUsername"))'
           )
 
         v-flex(
@@ -246,7 +282,10 @@ export default {
     password: '',
     passwordConfirm: '',
     emailEnabled: false,
+    emailActivated: false,
+    isEmailSubmit: false,
     telegramUsername: '',
+    loadingTelegramUsername: false,
     telegramFullName: '',
     telegramActivated: false,
     telegramEnabled: false,
@@ -255,7 +294,8 @@ export default {
     isSubmit: false,
     loadingEmail: false,
     showRemove: false,
-    showSaveSettings: false,
+    showSaveSettingsForTelegram: false,
+    showSaveSettingsForEmail: false,
     telegramBotLink
   } ),
   computed: {
@@ -263,6 +303,7 @@ export default {
       langStore: state => state.lang,
       usernameStore: state => state.username,
       emailStore: state => state.email,
+      emailActivatedStore: state => state.emailActivated,
       emailEnabledStore: state => state.emailEnabled,
       telegramUsernameStore: state => state.telegramUsername,
       telegramFullNameStore: state => state.telegramFullName,
@@ -305,7 +346,10 @@ export default {
       if ( result ) {
         const data = { };
         if ( this.isUsernameChange ) data.username = this.username;
-        if ( this.isEmailChange ) data.email = email;
+        if ( this.isEmailChange ) {
+          data.email = email;
+          data.email_activated = false;
+        }
         if ( this.password ) data.password = this.password;
         if ( this.isLangChange ) data.lang = this.lang;
         if ( this.isEmailEnabled ) data.email_enabled = this.emailEnabled;
@@ -318,6 +362,7 @@ export default {
         try {
           await this.userUpdate( data );
           this.isSubmit = true;
+          this.setLocalUserInfo( );
         } catch ( error ) { }
       }
     },
@@ -326,15 +371,35 @@ export default {
     },
     onClickTelegramActivated( ) {
       if ( this.isTelegramUsernameChange ) {
-        this.showSaveSettings = true;
+        this.showSaveSettingsForTelegram = true;
       } else {
         this.onGoTelegramBot( );
       }
     },
+    onClickEmailActivated( ) {
+      if ( this.isEmailChange ) {
+        this.isEmailSubmit = false;
+        this.showSaveSettingsForEmail = true;
+      } else {
+        this.onConfirmEmail( );
+      }
+    },
     async onClickSaveAndGoBot( ) {
-      this.showSaveSettings = false;
+      this.showSaveSettingsForTelegram = false;
       await this.onSubmit( );
       this.onGoTelegramBot( );
+    },
+    async onClicksaveAndConfirmEmail( ) {
+      await this.onSubmit( );
+      this.onConfirmEmail( );
+    },
+    async onConfirmEmail( ) {
+      const email = this.email;
+      try {
+        await this.$store.dispatch( 'auth/repeatConfirmation', { email } );
+        this.isEmailSubmit = true;
+        this.showSaveSettingsForEmail = true;
+      } catch ( error ) { };
     },
     onBack( ) {
       this.$router.push( { name: 'signIn' } );
@@ -353,6 +418,7 @@ export default {
       this.username = this.usernameStore;
       this.email = this.emailStore;
       this.password = this.passwordConfirm = '';
+      this.emailActivated = this.emailActivatedStore;
       this.emailEnabled = this.emailEnabledStore;
       this.telegramUsername = this.telegramUsernameStore;
       this.telegramFullName = this.telegramFullNameStore;
@@ -365,6 +431,13 @@ export default {
         await this.$validator.validate( 'email', val );
       };
       this.loadingEmail = false;
+    },
+    async onInputTelegramUsername( val ) {
+      if ( this.isTelegramUsernameChange ) {
+        this.loadingTelegramUsername = true;
+        await this.$validator.validate( 'telegramUsername', val );
+      };
+      this.loadingTelegramUsername = false;
     }
   },
   created( ) {
@@ -373,7 +446,14 @@ export default {
     // For visible loading text field
     this.$validator.attach( {
       name: 'email',
-      rules: { required: true, email: true, check_email: true },
+      rules: { email: true, check_email: true },
+      delay: 500
+    } );
+
+    // For visible loading text field
+    this.$validator.attach( {
+      name: 'telegramUsername',
+      rules: { max: 32, regex: /^\w+$/, check_telegram: true },
       delay: 500
     } );
   },
@@ -382,16 +462,22 @@ export default {
       en: {
         submitMessage: 'Success.',
         userRemove: 'Remove Accaunt',
+        emailActivated: 'Email activated',
         telegramActivated: 'Activated Telegram',
         messageRemove: 'Are you sure you want to delete this account?',
-        messageSaveSettings: 'Save settings for telegram bot'
+        messageSaveSettingsForTelegram: 'Save settings for telegram bot',
+        messageSaveSettingsForEmail: 'Save settings for email',
+        emailSubmitMessage: 'A letter with a activation link has been sent to the email address.'
       },
       ru: {
         submitMessage: 'Сохранено.',
         userRemove: 'Удалить профиль',
+        emailActivated: 'Активировать Email',
         telegramActivated: 'Активировать Telegram',
         messageRemove: 'Вы уверенны в удалении пользователя?',
-        messageSaveSettings: 'Сохраните настроки для активации бота в Telegram'
+        messageSaveSettingsForTelegram: 'Сохраните настроки для активации бота в Telegram',
+        messageSaveSettingsForEmail: 'Сохраните настроки для активации Email',
+        emailSubmitMessage: 'Письмо с ссылкой активации отправлено на email.'
       }
     }
   }

@@ -28,10 +28,11 @@ export default {
   newNotification: 'Новое уведомление',
   editNotification: 'Редактирование уведомления',
   send: 'Выслать',
-  emailEnabled: 'Email enabled',
-  telegramUsername: 'Telegram username',
-  telegramFullName: 'Telegram fullname',
-  telegramEnabled: 'Telegram enabled',
+  emailEnabled: 'Email включен',
+  telegramUsername: 'Telegram пользователь',
+  telegramFullName: 'Telegram имя и фамилия',
+  telegramEnabled: 'Telegram включен',
   pairs: 'Валютные пары',
-  saveAndGo: 'Сохранить и перейти'
+  saveAndGo: 'Сохранить и перейти',
+  saveAndConfirm: 'Сохранить и подтвердить'
 };

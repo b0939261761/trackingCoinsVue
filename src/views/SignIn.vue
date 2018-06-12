@@ -46,8 +46,22 @@ v-content
                 ref='email'
                 @keyup.enter='$refs.password.focus( )'
                 :error-messages='errors.collect("email")'
-                v-validate='{ required: true, email: true }'
+                v-validate='{ email: true }'
                 data-vv-name='email'
+                prepend-icon='email'
+                :disabled='Boolean(telegramUsername)'
+              )
+
+              v-text-field(
+                :label='$t("telegramUsername")'
+                v-model='telegramUsername'
+                ref='telegramUsername'
+                @keyup.enter='$refs.password.focus( )'
+                :error-messages='errors.collect("telegramUsername")'
+                v-validate='{ max: 32, regex: /^\\w+$/ }'
+                data-vv-name='telegramUsername'
+                prepend-icon='alternate_email'
+                :disabled='Boolean(email)'
               )
 
               v-text-field(
@@ -97,25 +111,27 @@ v-content
 export default {
   data: ( ) => ( {
     email: '',
+    telegramUsername: '',
     password: '',
     passVisible: false
   } ),
   computed: {
     isDisabled( ) {
-      return !this.email || !this.password || this.errors.any( );
+      return ( !this.email && !this.telegramUsername ) || !this.password || this.errors.any( );
     }
   },
   methods: {
     async onSubmit( ) {
       this.isSubmitProcess = true;
       if ( await this.$validator.validateAll( ) ) {
-        const { email, password } = this;
+        const { email, telegramUsername, password } = this;
         try {
-          await this.$store.dispatch( 'auth/signIn', { email, password } );
+          await this.$store.dispatch( 'auth/signIn', { email, telegramUsername, password } );
           this.$router.push( { name: 'home' } );
         } catch ( error ) {
-          this.email = null;
-          this.password = null;
+          this.email = '';
+          this.telegramUsername = '';
+          this.password = '';
           setTimeout( () => this.errors.clear( ), 0 );
         }
       }

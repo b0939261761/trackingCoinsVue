@@ -8,12 +8,17 @@ import i18nEn from '@/lang/en';
 import i18nRu from '@/lang/ru';
 
 Validator.extend( 'uncheck_email', async ( value ) => {
-  const check = await store.dispatch( 'auth/checkUser', value );
+  const check = await store.dispatch( 'auth/checkUser', { email: value } );
   return { valid: check };
 } );
 
 Validator.extend( 'check_email', async ( value ) => {
-  const check = await store.dispatch( 'auth/checkUser', value );
+  const check = await store.dispatch( 'auth/checkUser', { email: value } );
+  return { valid: !check };
+} );
+
+Validator.extend( 'check_telegram', async ( value ) => {
+  const check = await store.dispatch( 'auth/checkUser', { telegram_username: value } );
   return { valid: !check };
 } );
 
@@ -23,6 +28,7 @@ const getAttributes = ( { email, password, passwordConfirm, username, telegramUs
 const dictionary = {
   en: {
     messages: {
+      check_telegram: ( ) => 'A user with this telegram username exists.',
       check_email: ( ) => 'A user with this email exists.',
       uncheck_email: ( ) => 'User with this email is not registered'
     },
@@ -32,6 +38,7 @@ const dictionary = {
   },
   ru: {
     messages: {
+      check_telegram: ( ) => 'Пользователь с данным телеграм аккаунтом существует.',
       check_email: ( ) => 'Пользователь с данным email существует.',
       uncheck_email: ( ) => 'Пользователь с данным email не зарегистрирован.'
     },

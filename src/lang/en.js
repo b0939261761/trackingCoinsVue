@@ -33,5 +33,6 @@ export default {
   telegramFullName: 'Telegram fullname',
   telegramEnabled: 'Telegram enabled',
   pairs: 'Currency pairs',
-  saveAndGo: 'Save and Go'
+  saveAndGo: 'Save and Go',
+  saveAndConfirm: 'Save and Confirm'
 };

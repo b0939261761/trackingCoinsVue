@@ -122,11 +122,11 @@ export default {
     messages: {
       en: {
         toolbarTitle: 'Create account',
-        submitMessage: 'A letter with a recovery link has been sent to the email address.'
+        submitMessage: 'A letter with a confirmation link has been sent to the email address.'
       },
       ru: {
         toolbarTitle: 'Регистрация',
-        submitMessage: 'Письмо с ссылкой восстановления отправлено на email.'
+        submitMessage: 'Письмо с ссылкой подтверждения отправлено на email.'
       }
     }
   }

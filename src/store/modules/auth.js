@@ -12,17 +12,19 @@ const headersToken = ( token ) => ( { 'Authorization': `Bearer ${ token }` } );
 export default {
   namespaced: true,
   actions: {
-    async signIn( { commit }, { email, password } ) {
-      const response = await http.post( '/sign_in', { email, password }, { withoutToken: true } );
+    async signIn( { commit }, { email, telegramUsername, password } ) {
+      const response = await http.post( '/sign_in',
+        { email: email || null, telegram_username: telegramUsername || null, password },
+        { withoutToken: true } );
       enterSite( { response, commit } );
     },
     async signUp( _, { username, email, password } ) {
       await http.post( '/sign_up', { username, email, password }, { withoutToken: true } );
     },
-    async checkUser( _, email ) {
+    async checkUser( _, value ) {
       let check = false;
       try {
-        const response = await http.post( '/check_user', { email }, { withoutToken: true } );
+        const response = await http.post( '/check_user', value, { withoutToken: true } );
         check = response.data.check;
       } catch ( error ) { };
       return check;

@@ -5,6 +5,7 @@ export default {
   state: {
     username: null,
     email: null,
+    emailActivated: null,
     emailEnabled: null,
     lang: null,
     telegramUsername: null,
@@ -18,6 +19,7 @@ export default {
       state.email = user.email;
       state.lang = user.lang;
       state.emailEnabled = user.email_enabled;
+      state.emailActivated = user.email_activated;
       state.telegramUsername = user.telegram_username;
       state.telegramFullName = user.telegram_full_name;
       state.telegramActivated = user.telegram_activated;
