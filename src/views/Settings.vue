@@ -187,15 +187,26 @@ v-card( height='100%' )
           xs12
           md6
         )
-          v-text-field(
-            :label='$t("telegramUsername")'
-            v-model='telegramUsername'
-            ref='telegramUsername'
-            @keyup.enter='onSubmit'
-            :error-messages='errors.collect("telegramUsername")'
-            @input='onInputTelegramUsername'
-            :loading='loadingTelegramUsername'
+          v-tooltip(
+            top
+            v-model='telegramTooltip'
+            :disabled='!telegramTooltip'
           )
+            span( v-text='$t("telegramTooltip")' )
+
+            v-text-field(
+              slot='activator'
+              :label='$t("telegramUsername")'
+              v-model='telegramUsername'
+              ref='telegramUsername'
+              @keyup.enter='onSubmit'
+              :error-messages='errors.collect("telegramUsername")'
+              @input='onInputTelegramUsername'
+              :loading='loadingTelegramUsername'
+              prepend-icon='alternate_email'
+              append-icon='live_help'
+              :append-icon-cb='() => this.telegramTooltip = true'
+            )
 
         v-flex(
           xs12
@@ -296,6 +307,7 @@ export default {
     showRemove: false,
     showSaveSettingsForTelegram: false,
     showSaveSettingsForEmail: false,
+    telegramTooltip: false,
     telegramBotLink
   } ),
   computed: {
@@ -467,7 +479,8 @@ export default {
         messageRemove: 'Are you sure you want to delete this account?',
         messageSaveSettingsForTelegram: 'Save settings for telegram bot',
         messageSaveSettingsForEmail: 'Save settings for email',
-        emailSubmitMessage: 'A letter with a activation link has been sent to the email address.'
+        emailSubmitMessage: 'A letter with a activation link has been sent to the email address.',
+        telegramTooltip: 'Telegram -> Settings -> Username (after @)'
       },
       ru: {
         submitMessage: 'Сохранено.',
@@ -477,7 +490,8 @@ export default {
         messageRemove: 'Вы уверенны в удалении пользователя?',
         messageSaveSettingsForTelegram: 'Сохраните настроки для активации бота в Telegram',
         messageSaveSettingsForEmail: 'Сохраните настроки для активации Email',
-        emailSubmitMessage: 'Письмо с ссылкой активации отправлено на email.'
+        emailSubmitMessage: 'Письмо с ссылкой активации отправлено на email.',
+        telegramTooltip: 'Телеграм -> Настройки -> Имя пользователя (после знака @)'
       }
     }
   }
