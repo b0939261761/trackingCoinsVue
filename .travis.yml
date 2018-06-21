@@ -18,7 +18,11 @@ before_install:
   - ssh-add ./id_rsa
   - ssh -i ./id_rsa root@$SSH_HOST pwd
 
- deploy:
+branches:
+  only:
+  - master
+
+deploy:
   provider: script
   skip_cleanup: true
   script: rsync -r --quiet --delete-after dir/* $DEPLOY_USER@$SSH_HOST:$DEPLOY_DIRECTORY
