@@ -38,7 +38,7 @@ deploy:
   provider: script
   skip_cleanup: true
   script: bash -c '
-    rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_PATH
+    rsync --recursive --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_PATH
     && ssh -i ./.travis/id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"'
   on:
     branch: master
