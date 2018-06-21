@@ -26,7 +26,6 @@ before_install:
   - chmod 600 ./.travis/id_rsa
   - echo -e "Host $SSH_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - ssh-add ./.travis/id_rsa
-  - ssh -i ./.travis/id_rsa root@$SSH_HOST pwd
 
 install:
   - npm install
