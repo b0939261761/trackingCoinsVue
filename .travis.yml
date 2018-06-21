@@ -40,7 +40,6 @@ deploy:
   # script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:/root/trackingCoins/web
   script:
     - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
-    # - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$APP_PATH/$DEPLOY_DIRECTORY
-    # - ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"
+    - ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"
   on:
     branch: master
