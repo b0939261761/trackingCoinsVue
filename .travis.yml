@@ -4,6 +4,8 @@ env:
   APP_PATH: /root/trackingCoins
   DEPLOY_PATH: $APP_PATH/web
 
+sudo: false
+
 node_js:
   - node
 
@@ -19,12 +21,12 @@ cache:
     - node_modules
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv -in ./id_rsa.enc -out ./id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv -in ./.travis/id_rsa.enc -out ./.travis/id_rsa -d
   - eval "$(ssh-agent -s)"
-  - chmod 600 ./id_rsa
+  - chmod 600 ./.travis/id_rsa
   - echo -e "Host $SSH_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - ssh-add ./id_rsa
-  - ssh -i ./id_rsa root@$SSH_HOST pwd
+  - ssh-add ./.travis/id_rsa
+  - ssh -i ./.travis/id_rsa root@$SSH_HOST pwd
 
 install:
   - npm install
@@ -36,7 +38,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  # script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:/root/trackingCoins/web
   script: bash -c '
     rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_PATH
     && ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose stop nginx"'
