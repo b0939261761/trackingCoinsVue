@@ -39,7 +39,7 @@ deploy:
   skip_cleanup: true
   script: bash -c '
     rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_PATH
-    && ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose stop nginx"'
+    && ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"'
   on:
     branch: master
 
