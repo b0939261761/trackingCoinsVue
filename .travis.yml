@@ -1,7 +1,8 @@
 language: node_js
 env:
   SSH_USER: root
-  DEPLOY_DIRECTORY: /root/1
+  APP_DIRECTORY: /root/trackingCoins
+  DEPLOY_DIRECTORY: $APP_DIRECTORY/web
 
 node_js:
   - node
@@ -14,8 +15,7 @@ cache:
     - node_modules
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv
-    -in ./id_rsa.enc -out ./id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv -in ./id_rsa.enc -out ./id_rsa -d
   - eval "$(ssh-agent -s)"
   - chmod 600 ./id_rsa
   - echo -e "Host $SSH_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
@@ -33,6 +33,6 @@ deploy:
   provider: script
   skip_cleanup: true
   script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
-  script: ssh -i ./id_rsa root@$SSH_HOST systemctl restart coins
+  script: ssh -i ./id_rsa root@$SSH_HOST bash -c "cd $APP_DIRECTORY && docker-compose restart nginx"
   on:
     branch: master
