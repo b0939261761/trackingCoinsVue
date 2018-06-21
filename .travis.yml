@@ -2,7 +2,7 @@ language: node_js
 env:
   SSH_USER: root
   APP_PATH: /root/trackingCoins
-  DEPLOY_DIRECTORY: web
+  DEPLOY_DIRECTORY: $APP_PATH/web
 
 node_js:
   - node
@@ -39,7 +39,8 @@ deploy:
   skip_cleanup: true
   # script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:/root/trackingCoins/web
   script:
-    - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$APP_PATH/$DEPLOY_DIRECTORY
+    - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
+    # - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$APP_PATH/$DEPLOY_DIRECTORY
     # - ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"
   on:
     branch: master
