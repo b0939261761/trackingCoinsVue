@@ -33,6 +33,6 @@ deploy:
   provider: script
   skip_cleanup: true
   script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
+  script: ssh -i ./id_rsa root@$SSH_HOST systemctl restart coins
   on:
     branch: master
-  - ssh -i ./id_rsa root@$SSH_HOST systemctl restart coins
