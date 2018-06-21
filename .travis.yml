@@ -14,7 +14,6 @@ branches:
   only:
     - master
 
-
 cache:
   directories:
     - node_modules
@@ -38,8 +37,9 @@ deploy:
   provider: script
   skip_cleanup: true
   # script: rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:/root/trackingCoins/web
-  script:
-    # - rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
-    - ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"
+  script: bash -c '
+    rsync -r --quiet --delete-after dist/* $SSH_USER@$SSH_HOST:$DEPLOY_DIRECTORY
+    && ssh -i ./id_rsa root@$SSH_HOST "cd $APP_PATH && docker-compose restart nginx"'
   on:
     branch: master
+
