@@ -1,7 +1,7 @@
 language: node_js
 env:
-- SSH_USER=root
-- DEPLOY_DIRECTORY=/root/1
+  SSH_USER: root
+  DEPLOY_DIRECTORY: /root/1
 
 node_js:
   - node
@@ -9,9 +9,16 @@ branches:
   only:
     - master
 
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
 
 script:
   - echo "npm test temporarily disabled"
+  - npm run build
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv
