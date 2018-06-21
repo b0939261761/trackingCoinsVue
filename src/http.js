@@ -3,11 +3,7 @@ import store from '@/store/';
 import { getAccessToken, getRefreshToken, setTokens, removeTokens } from '@/cookies';
 import router from '@/router';
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'https://Cryptonot.io:8090' : 'http://192.168.5.141:8090';
-
-const http = axios.create( {
-  baseURL
-} );
+const http = axios.create( { baseUrl: process.env.VUE_APP_BASE_URL } );
 
 export const setBearer = ( token ) => ( { 'Authorization': `Bearer ${ token }` } );
 export const getHeadersToken = ( { 'access-token': accessToken, 'refresh-token': refreshToken } ) =>
@@ -35,7 +31,7 @@ const getTokensAndRetry = async ( config ) => {
   const currentRefreshToken = getRefreshToken( );
   if ( currentRefreshToken ) {
     const { headers: repsonseHeaders } = await axios.post(
-      `${ baseURL }/take_access_token`,
+      `${ baseUrl }/take_access_token`,
       null,
       { headers: setBearer( currentRefreshToken ) }
     );
