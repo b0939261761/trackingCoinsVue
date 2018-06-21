@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - latest
-  
+  - node
+
 before_install:
   - openssl aes-256-cbc -K $encrypted_f21500ed0193_key -iv $encrypted_f21500ed0193_iv
     -in ./id_rsa.enc -out ./id_rsa -d
