@@ -3,5 +3,6 @@ before_install:
   -in ./id_rsa.enc -out ./id_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 ./id_rsa
+- echo -e "Host $SSH_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add ./id_rsa
 - ssh -i ./id_rsa root@$SSH_HOST pwd
