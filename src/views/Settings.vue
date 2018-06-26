@@ -110,7 +110,7 @@ v-card( height='100%' )
             v-model='username'
             @keyup.enter='$refs.email.focus( )'
             :error-messages='errors.collect("username")'
-            v-validate='{ min: 5, max: 30, alpha: true }'
+            v-validate='{ min: 5, max: 30, alpha_num: true }'
             data-vv-name='username'
           )
 

@@ -50,7 +50,7 @@ v-content
                   v-model='username'
                   @keyup.enter='$refs.email.focus( )'
                   :error-messages='errors.collect("username")'
-                  v-validate='{ required: true, min: 5, max: 30, alpha: true }'
+                  v-validate='{ required: true, min: 5, max: 30, alpha_num: true }'
                   data-vv-name='username'
                 )
 
