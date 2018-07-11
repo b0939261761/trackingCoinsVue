@@ -58,10 +58,10 @@ const router = new Router( {
       path: '/',
       name: 'home',
       component: ( ) => import( '@/views/Home' ),
+      redirect: { name: 'settings' },
       children: [
         {
           path: 'settings',
-          alias: '',
           name: 'settings',
           component: ( ) => import( '@/views/Settings' ),
           beforeEnter: settingsBeforeEnter
