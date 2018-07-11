@@ -22,22 +22,18 @@ const setI18nLanguage = lang => {
   document.querySelector( 'html' ).lang = lang;
   store.commit( 'setCurrentLang', { lang } );
   Cookies.set( 'lang', lang, { expires: 20 * 365 } );
-
-  return lang;
 };
 
-export const loadLanguageAsync = lang => {
+export const changeLanguage = async lang => {
   if ( i18n.locale !== lang ) {
     if ( !loadedLanguages.includes( lang ) ) {
-      return import( `@/lang/${ lang }` ).then( response => {
-        i18n.setLocaleMessage( lang, response.default );
-        loadedLanguages.push( lang );
-        return setI18nLanguage( lang );
-      } );
+      const response = await import( `@/lang/${ lang }` );
+      i18n.setLocaleMessage( lang, response.default );
+      loadedLanguages.push( lang );
     }
-    return Promise.resolve( setI18nLanguage( lang ) );
+    setI18nLanguage( lang );
   }
-  return Promise.resolve( lang );
+  return lang;
 };
 
 const cookieLang = Cookies.get( 'lang' );
@@ -49,4 +45,4 @@ const lang = (
   navigator.userLanguage ||
   'en' ).slice( 0, 2 );
 
-loadLanguageAsync( lang );
+changeLanguage( lang );

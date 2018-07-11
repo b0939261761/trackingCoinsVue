@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import { getRefreshToken, removeTokens } from '@/cookies';
 import store from '@/store/';
+import { changeLanguage } from '@/lang/';
 
 Vue.use( Router );
 
@@ -60,6 +61,7 @@ const router = new Router( {
       children: [
         {
           path: 'settings',
+          alias: '',
           name: 'settings',
           component: ( ) => import( '@/views/Settings' ),
           beforeEnter: settingsBeforeEnter
@@ -138,6 +140,9 @@ const router = new Router( {
 } );
 
 router.beforeEach( ( to, from, next ) => {
+  const { query: { lang } } = to;
+  if ( lang ) changeLanguage( lang );
+
   switch ( to.meta.type ) {
     case 'auth':
       removeTokens( );

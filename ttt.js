@@ -73,4 +73,21 @@ const fib = (n, x=0, y=1) => (
 // }
 
 
-console.log([1, 2, 3, 4, 5].copyWithin(0, 3,4))
+// console.log([1, 2, 3, 4, 5].copyWithin(0, 3,4))
+
+const PI = digit => Math.PI.toFixed(digit)
+
+console.log(PI(20))
+
+var getPI = function (n) {
+  "use strict";
+
+  if (n === undefined || n > 20) {
+      n = 20;
+  }
+
+  return (16 * Math.atan(1 / 5) - 4 * Math.atan(1 / 239)).toFixed(n);
+};
+
+console.log(getPI(20));
+

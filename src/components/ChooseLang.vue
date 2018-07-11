@@ -31,7 +31,7 @@ v-menu(
 </template>
 
 <script>
-import { loadLanguageAsync } from '@/lang/';
+import { changeLanguage } from '@/lang/';
 
 export default {
   name: 'Preloader',
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     onChangeLang( lang ) {
-      loadLanguageAsync( lang );
+      changeLanguage( lang );
     }
   }
 };
