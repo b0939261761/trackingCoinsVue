@@ -83,6 +83,11 @@ const router = new Router( {
           name: 'exchanges',
           component: ( ) => import( '@/views/Exchanges' ),
           beforeEnter: exchangesBeforeEnter
+        },
+        {
+          path: 'help',
+          name: 'help',
+          component: ( ) => import( '@/views/Help' )
         }
       ]
     },

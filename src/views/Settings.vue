@@ -157,7 +157,7 @@ v-card( height='100%' )
             ref='password'
             @keyup.enter='$refs.passwordConfirm.focus( )'
             :append-icon='passVisible ? "visibility" : "visibility_off"'
-            :append-icon-cb='( ) => passVisible = !passVisible'
+            @click:append='passVisible = !passVisible'
             :error-messages='errors.collect("password")'
             :type='passVisible ? "text" : "password"'
             name='password'
@@ -175,7 +175,7 @@ v-card( height='100%' )
             ref='passwordConfirm'
             @keyup.enter='$refs.telegramUsername.focus( )'
             :append-icon='passConfirmVisible ? "visibility" : "visibility_off"'
-            :append-icon-cb='( ) => passConfirmVisible = !passConfirmVisible'
+            @click:append='passConfirmVisible = !passConfirmVisible'
             :error-messages='errors.collect("passwordConfirm")'
             :type='passConfirmVisible ? "text" : "password"'
             v-validate='{ confirmed: "password" }'
@@ -205,7 +205,7 @@ v-card( height='100%' )
               :loading='loadingTelegramUsername'
               prepend-icon='alternate_email'
               append-icon='live_help'
-              :append-icon-cb='() => this.telegramTooltip = true'
+              @click:append='telegramTooltip = true'
             )
 
         v-flex(
@@ -283,7 +283,7 @@ v-card( height='100%' )
 import { createNamespacedHelpers } from 'vuex';
 const { mapState, mapActions } = createNamespacedHelpers( 'user' );
 
-const telegramBotLink = `https://t.me/${ process.env.NODE_ENV === 'production' ? 'CryptonotBot' : 'CryptonotTestBot' }`;
+const telegramBotLink = `https://t.me/${ process.env.VUE_APP_TELEGRAM_BOT }`;
 
 export default {
   data: ( ) => ( {

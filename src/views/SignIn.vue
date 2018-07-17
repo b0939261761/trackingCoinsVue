@@ -70,7 +70,7 @@ v-content
                 @keyup.enter='onSubmit'
                 ref='password'
                 :append-icon='passVisible ? "visibility" : "visibility_off"'
-                :append-icon-cb='( ) => this.passVisible = !this.passVisible'
+                @click:append='this.passVisible = !this.passVisible'
                 :error-messages='errors.collect("password")'
                 :type='passVisible ? "text" : "password"'
                 v-validate='{ required: true, min: 5, max: 30, regex: /^\\S+$/ }'

@@ -34,5 +34,8 @@ export default {
   telegramEnabled: 'Telegram enabled',
   pairs: 'Currency pairs',
   saveAndGo: 'Save and Go',
-  saveAndConfirm: 'Save and Confirm'
+  saveAndConfirm: 'Save and Confirm',
+  exit: 'Exit',
+  help: 'Help',
+  support: 'Technical Support'
 };

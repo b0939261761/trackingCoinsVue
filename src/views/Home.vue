@@ -96,9 +96,9 @@ export default {
         { icon: 'notifications', text: this.$t( 'notifications' ), pathName: 'notifications' },
         { icon: 'settings', text: this.$t( 'settings' ), pathName: 'settings' },
         { divider: true },
-        { icon: 'help', text: 'Помощь', pathName: 'settings', disabled: true },
+        { icon: 'help', text: this.$t( 'help' ), pathName: 'help' },
         { divider: true },
-        { icon: 'exit_to_app', text: 'Выход', pathName: 'signIn' }
+        { icon: 'exit_to_app', text: this.$t( 'exit' ), pathName: 'signIn' }
       ];
     }
   },
