@@ -25,7 +25,7 @@ v-flex(
           v-text='$t("cancel")'
         )
 
-  v-card
+  v-card( height='100%')
     v-container( grid-list-md )
       v-card-actions
         v-layout( wrap )

@@ -1,5 +1,4 @@
 <template lang='pug'>
-
 v-flex(
   xs12
   md6

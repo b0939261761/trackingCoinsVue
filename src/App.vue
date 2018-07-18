@@ -30,7 +30,6 @@ body {
 
 .height-100 {
   height: 100%;
-  color:peru
 }
 
 .p-relative {

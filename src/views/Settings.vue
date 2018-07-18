@@ -17,6 +17,8 @@ v-card( height='100%' )
           @lang='lang = $event'
         )
 
+      v-layout( wrap )
+
         SettingsEmail(
           :email='email'
           @email='email = $event'

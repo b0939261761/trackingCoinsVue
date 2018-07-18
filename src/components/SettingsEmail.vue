@@ -30,7 +30,7 @@ v-flex(
           v-text='isEmailSubmit ? "OK" : $t("cancel")'
         )
 
-  v-card
+  v-card( height='100%' )
     v-card-title
       div
         span( class='grey--text headline') Email
