@@ -38,4 +38,5 @@ export default {
   exit: 'Выход',
   help: 'Помощь',
   support: 'Техподдержка'
+
 };

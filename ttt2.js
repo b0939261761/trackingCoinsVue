@@ -27,3 +27,6 @@
 //   arr2.push(arr1.splice(0,3));
 // }
 // console.table(arr2)
+
+let [{b}] = [{a:3, b:4} , {c: 5, d: 6}];
+console.log(val1, b, c) // 2, 4, 5, 6
